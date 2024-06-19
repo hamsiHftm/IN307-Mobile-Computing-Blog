@@ -63,3 +63,8 @@ windows/Flutter/flutter_export_environment.bat
 *.xcuserdatad
 DerivedData/
 .generated/
+/macos/Flutter/ephemeral/Flutter-Generated.xcconfig
+/macos/Flutter/ephemeral/flutter_export_environment.sh
+/ios/Runner/GeneratedPluginRegistrant.h
+/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+/ios/Runner/GeneratedPluginRegistrant.m
