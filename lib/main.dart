@@ -56,40 +56,46 @@ class _MyBlogListPageState extends State<MyBlogListPage>
 
   @override
   Widget build(BuildContext context) {
-    // Access BlogModel using Provider.of<BlogModel>(context)
-    final _blogModel = Provider.of<BlogModel>(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title), // TODO add search bar instead of text
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          BlogListView(
-            blogs: _blogModel.blogs,
-            blogModel: _blogModel,
-          ),
-          BlogListView(
-            blogs: _blogModel.blogs,
-            favoritesOnly: true,
-            blogModel: _blogModel,
-          ),
-          Center(
-            child: BlogFormView(
-              onSave: ({required Blog newBlog, Blog? oldBlog}) {
-                _blogModel.addBlog(newBlog);
-                _tabController.animateTo(0);
-              },
-            ),
-          ),
-          Center(child: Text('Menu')), // TODO add blog list only created by the signed in user
-          Center(child: Text('Profile')), // TODO add Profile page
-        ],
+      body: Consumer<BlogModel>(
+        builder: (context, blogModel, child) {
+          return TabBarView(
+            controller: _tabController,
+            children: [
+              BlogListView(
+                blogs: blogModel.blogs,
+                blogModel: blogModel,
+              ),
+              BlogListView(
+                blogs: blogModel.blogs,
+                favoritesOnly: true,
+                blogModel: blogModel,
+              ),
+              Center(
+                child: BlogFormView(
+                  onSave: ({required Blog newBlog, Blog? oldBlog}) {
+                    if (oldBlog != null) {
+                      blogModel.editBlog(blogModel.getIndexOfBlog(oldBlog), newBlog);
+                    } else {
+                      blogModel.addBlog(newBlog);
+                    }
+                    _tabController.animateTo(0);
+                  },
+                ),
+              ),
+              Center(child: Text('Menu')), // TODO add blog list only created by the signed in user
+              Center(child: Text('Profile')), // TODO add Profile page
+            ],
+          );
+        },
       ),
-      bottomNavigationBar: const TabBar(
-        tabs: [
+      bottomNavigationBar: TabBar(
+        controller: _tabController,
+        tabs: const [
           Tab(icon: Icon(Icons.home), text: 'Home'),
           Tab(icon: Icon(Icons.favorite), text: 'Favorites'),
           Tab(icon: Icon(Icons.add_circle), text: 'Add Blog'),
