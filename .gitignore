@@ -68,3 +68,6 @@ DerivedData/
 /ios/Runner/GeneratedPluginRegistrant.h
 /android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
 /ios/Runner/GeneratedPluginRegistrant.m
+/android/gradle/wrapper/gradle-wrapper.jar
+/android/gradlew
+/android/gradlew.bat

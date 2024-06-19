@@ -1,30 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:in307_mobile_computing_blog/model/blog.dart';
+import 'package:in307_mobile_computing_blog/component/blog_list.dart';
+import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => BlogModel(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // TODO add custom icon for app
       title: 'Blog-IN307',
+      // TODO create custom theme
       theme: ThemeData(
-        // This is the theme of your application.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.redAccent),
         useMaterial3: true,
       ),
-      home: const MyBlogListPage(title: 'Blog'),
+      home: DefaultTabController(
+        length: 5,
+        child: const MyBlogListPage(title: 'Blog'),
+      ),
     );
   }
 }
 
 class MyBlogListPage extends StatefulWidget {
-  const MyBlogListPage({super.key, required this.title});
+  const MyBlogListPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -32,104 +44,59 @@ class MyBlogListPage extends StatefulWidget {
   State<MyBlogListPage> createState() => _MyBlogListPageState();
 }
 
-class _MyBlogListPageState extends State<MyBlogListPage> {
-  var blogEntries = [
-    BlogEntry("Flutter ist toll!", "Mit Flutter hebst du deune App-Entwicklung auf ein neues Level. Probier es aus!", DateTime(2024, 5, 24), false),
-    BlogEntry("Der Kurs ist dabei abzuheben", "Fasten your seatbelts, we are ready for takeoff! Jetzt geht's ans Eingemachte. Bleib dabei!", DateTime(2024, 5, 22), true),
-    BlogEntry("Klasse erzeugt eine super App", "Während dem aktiven Plenum hat die Klasse alles rausgeholt und eine tolle App gebaut. Alle waren beigeistert dabei und haben viel neues gelernt.", DateTime(2024, 5, 22), false),
-  ];
+class _MyBlogListPageState extends State<MyBlogListPage>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
 
-  void _addBlog() {
-    setState(() {
-      blogEntries.add(BlogEntry("New Titel", "new Text", DateTime.now(), false));
-    });
-  }
-
-  void _toggleFavorite(int index) {
-    setState(() {
-      blogEntries[index].isFavorite = !blogEntries[index].isFavorite;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called
+    // Access BlogModel using Provider.of<BlogModel>(context)
+    final _blogModel = Provider.of<BlogModel>(context);
+
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: _addBlog,
-        ),
-        appBar: AppBar(
-          backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .inversePrimary, // setting color background color
-          title: Text(widget.title), // set appbar title
-        ),
-        body: ListView.builder(
-            itemCount: blogEntries.length,
-            itemBuilder: (context, index) {
-              return BlogCard(
-                  blog: blogEntries[index],
-                  onFavoriteToggle: () => _toggleFavorite(index)
-              );
-            }
-        ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title), // TODO add search bar instead of text
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          BlogListView(
+            blogs: _blogModel.blogs,
+            blogModel: _blogModel,
+          ),
+          BlogListView(
+            blogs: _blogModel.blogs,
+            favoritesOnly: true,
+            blogModel: _blogModel,
+          ),
+          Center(
+            child: BlogFormView(
+              onSave: ({required Blog newBlog, Blog? oldBlog}) {
+                _blogModel.addBlog(newBlog);
+                _tabController.animateTo(0);
+              },
+            ),
+          ),
+          Center(child: Text('Menu')), // TODO add blog list only created by the signed in user
+          Center(child: Text('Profile')), // TODO add Profile page
+        ],
+      ),
+      bottomNavigationBar: const TabBar(
+        tabs: [
+          Tab(icon: Icon(Icons.home), text: 'Home'),
+          Tab(icon: Icon(Icons.favorite), text: 'Favorites'),
+          Tab(icon: Icon(Icons.add_circle), text: 'Add Blog'),
+          Tab(icon: Icon(Icons.menu), text: 'My blogs'),
+          Tab(icon: Icon(Icons.account_circle), text: 'Profile'),
+        ],
+      ),
     );
   }
-}
-
-class BlogCard extends StatelessWidget {
-  // constructor
-  const BlogCard({
-    super.key,
-    required this.blog,
-    required this.onFavoriteToggle,
-  });
-
-  final BlogEntry blog;
-  final VoidCallback onFavoriteToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 25, 20, 25),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // blog title
-                  Text(blog.title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25
-                      )),
-                  const SizedBox(height: 10,),
-                  // blog text
-                  Text(blog.text),
-                  // date + favorite icon
-                  const SizedBox(height: 15,),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(DateFormat("dd.M.yyyy").format(blog.date)),
-                        IconButton(
-                          onPressed: onFavoriteToggle,
-                          icon: Icon(blog.isFavorite ? Icons.favorite : Icons.favorite_outline),
-                        ),
-                      ]),
-                ]
-            )
-        )
-    );
-  }
-}
-
-class BlogEntry {
-  String title;
-  String text;
-  DateTime date;
-  bool isFavorite;
-
-  BlogEntry(this.title, this.text, this.date, this.isFavorite);
 }
