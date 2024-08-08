@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/model/blog.dart';
 import 'package:in307_mobile_computing_blog/component/blog_list.dart';
+import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -78,11 +79,7 @@ class _MyBlogListPageState extends State<MyBlogListPage>
               Center(
                 child: BlogFormView(
                   onSave: ({required Blog newBlog, Blog? oldBlog}) {
-                    if (oldBlog != null) {
-                      blogModel.editBlog(blogModel.getIndexOfBlog(oldBlog), newBlog);
-                    } else {
-                      blogModel.addBlog(newBlog);
-                    }
+                    blogModel.addBlog(newBlog);
                     _tabController.animateTo(0);
                   },
                 ),

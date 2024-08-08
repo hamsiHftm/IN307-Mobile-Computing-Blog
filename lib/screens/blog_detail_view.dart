@@ -3,6 +3,7 @@ import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
 import 'package:intl/intl.dart';
 
 import '../model/blog.dart';
+import '../provider/blog_provider.dart';
 
 class BlogDetailView extends StatelessWidget {
   final Blog blog;
