@@ -30,21 +30,21 @@ The Flutter project follows a well-organized structure to ensure maintainability
 
 ### Directory Descriptions
 
-- **`api`**: Contains files responsible for API interactions. `blog_api.dart` defines the endpoints and methods for communication with the backend server.
+- **api**: Contains files responsible for API interactions. `blog_api.dart` defines the endpoints and methods for communication with the backend server.
 
-- **`component`**: Contains reusable UI components. `blog_card.dart` and `blog_list.dart` are used for displaying blog posts in various formats.
+- **component**: Contains reusable UI components. `blog_card.dart` and `blog_list.dart` are used for displaying blog posts in various formats.
 
-- **`main.dart`**: The main entry point of the application. This file initializes the app and sets up global configurations.
+- **main.dart**: The main entry point of the application. This file initializes the app and sets up global configurations.
 
-- **`model`**: Contains data models that represent the core entities of the application. `blog.dart` and `user.dart` define the structure of blog posts and user profiles, respectively.
+- **model**: Contains data models that represent the core entities of the application. `blog.dart` and `user.dart` define the structure of blog posts and user profiles, respectively.
 
-- **`provider`**: Manages the state of the application. `blog_provider.dart` handles the state and business logic related to blog posts.
+- **provider**: Manages the state of the application. `blog_provider.dart` handles the state and business logic related to blog posts.
 
-- **`screens`**: Contains the various screens or views of the application. `blog_detail_view.dart` and `blog_form_view.dart` are used to display detailed views of a blog post and forms for creating or editing posts.
+- **screens**: Contains the various screens or views of the application. `blog_detail_view.dart` and `blog_form_view.dart` are used to display detailed views of a blog post and forms for creating or editing posts.
 
-- **`services`**: Manages data fetching and business logic. `blog_repository.dart` interacts with `blog_api.dart` to fetch and manipulate data.
+- **services**: Manages data fetching and business logic. `blog_repository.dart` interacts with `blog_api.dart` to fetch and manipulate data.
 
-- **`utils` **: Contains utility classes and functions used throughout the application. `app_logger.dart` is a utility class for centralized logging.
+- **utils**: Contains utility classes and functions used throughout the application. `app_logger.dart` is a utility class for centralized logging.
 
 ## Getting Started
 
