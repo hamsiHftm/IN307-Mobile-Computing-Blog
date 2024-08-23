@@ -48,7 +48,6 @@ class BlogListView extends StatelessWidget {
               },
               child: BlogCard(
                 blog: blogsToShow[index],
-                onFavoriteToggle: () => blogModel.toggleFavorite(index),
               ),
             );
           },

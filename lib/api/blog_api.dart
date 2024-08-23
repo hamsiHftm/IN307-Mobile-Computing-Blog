@@ -15,7 +15,7 @@ class BlogApi {
 
   Future<List<Blog>> getBlogs() async {
     var queryParameters = {
-      'limit': '20',
+      'limit': '10',
       'offset': '0',
       'asc': 'true',
       'orderBy': 'createdAt',

@@ -32,6 +32,7 @@ class Blog {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       numberOfLikes: json['numberOfLikes'] ?? 0,
+      picUrl: json['picUrl'],
       user: json['user'] != null ? User.fromJson(json['user']) : null,
     );
   }
