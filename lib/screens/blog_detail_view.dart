@@ -28,7 +28,7 @@ class BlogDetailView extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              blog.text,
+              blog.content,
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),

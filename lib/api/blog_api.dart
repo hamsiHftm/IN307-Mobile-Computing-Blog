@@ -7,7 +7,11 @@ class BlogApi {
   static BlogApi instance = BlogApi._privateConstructor();
   BlogApi._privateConstructor();
 
-  static const String _baseUrl = "http://localhost:8080";
+  static const String _baseUrl = "10.0.2.2:8080";
+  final Map<String, String> _headers = {
+    'Content-Type': '*/*',
+    'Accept': '*/*'
+  };
 
   Future<List<Blog>> getBlogs() async {
     var queryParameters = {
@@ -19,12 +23,19 @@ class BlogApi {
     };
     try {
       final response = await http.get(
-        Uri.https(_baseUrl, "/blogs", queryParameters)
+        Uri.http(_baseUrl, "/public/blog", queryParameters),
+        headers: _headers
       );
       if (response.statusCode == 200) {
-        final List<dynamic> blogsJson = jsonDecode(response.body)["documents"];
-        var blogs = blogsJson.map((json) => Blog.fromJson(json)).toList();
-        return blogs;
+        final Map<String, dynamic> blogsJson = jsonDecode(response.body);
+        var isSuccess = jsonDecode(response.body)['isSuccess'];
+        if (isSuccess) {
+          final List<dynamic> blogsJson = jsonDecode(response.body)['data']['blogs'];
+          var blogs = blogsJson.map((json) => Blog.fromJson(json)).toList();
+          return blogs;
+        } else {
+          throw Exception('Failed to load blogs. isSuccess=False');
+        }
       } else {
         throw Exception(
             'Failed to load blogs. Status code: ${response.statusCode}');

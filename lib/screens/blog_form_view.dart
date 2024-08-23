@@ -21,7 +21,7 @@ class _BlogFormViewState extends State<BlogFormView> {
     super.initState();
     // Initialize controllers based on whether blog is null or not
     _titleController = TextEditingController(text: widget.blog?.title ?? '');
-    _contentController = TextEditingController(text: widget.blog?.text ?? '');
+    _contentController = TextEditingController(text: widget.blog?.content ?? '');
   }
 
   @override
@@ -34,10 +34,11 @@ class _BlogFormViewState extends State<BlogFormView> {
   void _handleSubmit() {
     if (_formKey.currentState!.validate()) {
       var editedBlog = Blog(
-        _titleController.text,
-        _contentController.text,
-        widget.blog?.createdAt ?? DateTime.now(), // Use existing date or current date
-        widget.blog?.isFavorite ?? false, // Use existing favorite status or false
+        id: widget.blog?.id ?? 0,
+        title: _titleController.text,
+        content: _contentController.text,
+        createdAt: widget.blog?.createdAt ?? DateTime.now(), // Use existing date or current date
+        isFavorite: widget.blog?.isFavorite ?? false, // Use existing favorite status or false
       );
 
       widget.onSave(newBlog: editedBlog, oldBlog: widget.blog); // Call onSave with edited or new blog

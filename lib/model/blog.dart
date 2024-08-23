@@ -1,33 +1,38 @@
 import 'package:flutter/foundation.dart';
+import 'user.dart';
 
 class Blog {
-  int? id;
+  int id;
   String title;
-  String text;
+  String content;
   DateTime createdAt;
-  // DateTime ?updatedAt;
+  DateTime? updatedAt;
   bool isFavorite;
-  int numberOfLikes = 0;
+  int numberOfLikes;
+  User? user;
+  String? picUrl;
 
-  Blog(this.title, this.text, this.createdAt, this.isFavorite);
+  Blog({
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.createdAt,
+    this.updatedAt,
+    this.isFavorite = false,
+    this.numberOfLikes = 0,
+    this.user,
+    this.picUrl,
+  });
 
   factory Blog.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-      'id': int id,
-      'title': String title,
-      'text': String text,
-      'createdAt': DateTime createdAt,
-      'numberOfLikes': int numberOfLikes
-      } =>
-          Blog(
-            title,
-            text,
-            createdAt,
-            false
-          ),
-      _ => throw const FormatException('Failed to load album.'),
-    };
+    return Blog(
+      id: json['id'],
+      title: json['title'],
+      content: json['content'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      numberOfLikes: json['numberOfLikes'] ?? 0,
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+    );
   }
-
 }

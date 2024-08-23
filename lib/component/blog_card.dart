@@ -29,7 +29,7 @@ class BlogCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Text(blog.text),
+            Text(blog.content),
             const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
