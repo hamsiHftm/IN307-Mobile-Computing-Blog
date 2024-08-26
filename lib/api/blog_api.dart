@@ -13,25 +13,27 @@ class BlogApi {
     'Accept': '*/*'
   };
 
-  Future<List<Blog>> getBlogs() async {
+  Future<List<Blog>> getBlogs({int limit = 10, int offset = 0, bool favoritesOnly = false}) async {
     var queryParameters = {
-      'limit': '10',
-      'offset': '0',
+      'limit': '$limit',
+      'offset': '$offset',
       'asc': 'true',
       'orderBy': 'createdAt',
       'searchTitle': ''
     };
+
     try {
       final response = await http.get(
         Uri.http(_baseUrl, "/public/blog", queryParameters),
-        headers: _headers
+        headers: _headers,
       );
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> blogsJson = jsonDecode(response.body);
-        var isSuccess = jsonDecode(response.body)['isSuccess'];
+        var isSuccess = blogsJson['isSuccess'];
         if (isSuccess) {
-          final List<dynamic> blogsJson = jsonDecode(response.body)['data']['blogs'];
-          var blogs = blogsJson.map((json) => Blog.fromJson(json)).toList();
+          final List<dynamic> blogsListJson = blogsJson['data']['blogs'];
+          var blogs = blogsListJson.map((json) => Blog.fromJson(json)).toList();
           return blogs;
         } else {
           throw Exception('Failed to load blogs. isSuccess=False');

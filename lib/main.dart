@@ -3,6 +3,7 @@ import 'package:in307_mobile_computing_blog/model/blog.dart';
 import 'package:in307_mobile_computing_blog/component/blog_list.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
+import 'package:in307_mobile_computing_blog/screens/blog_list_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -67,15 +68,8 @@ class _MyBlogListPageState extends State<MyBlogListPage>
           return TabBarView(
             controller: _tabController,
             children: [
-              BlogListView(
-                blogs: blogModel.blogs,
-                blogModel: blogModel,
-              ),
-              BlogListView(
-                blogs: blogModel.blogs,
-                favoritesOnly: true,
-                blogModel: blogModel,
-              ),
+              BlogListView(),
+              BlogListView(),
               Center(
                 child: BlogFormView(
                   onSave: ({required Blog newBlog, Blog? oldBlog}) {
