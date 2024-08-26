@@ -1,25 +1,27 @@
-class Comment {
-  int? id;
-  String content;
-  DateTime createdAt;
-  DateTime ?updatedAt;
-  int numberOfLikes = 0;
+import 'user.dart';
 
-  Comment(this.content, this.createdAt);
+class Comment {
+  final int id;
+  final String content;
+  final int numberOfLikes;
+  final DateTime createdAt;
+  final User user;
+
+  Comment({
+    required this.id,
+    required this.content,
+    required this.numberOfLikes,
+    required this.createdAt,
+    required this.user,
+  });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'id': int id,
-      'title': String title,
-      'content': String content,
-      'createdAt': DateTime createdAt,
-      'numberOfLikes': int numberOfLikes
-    } => Comment(
-        title,
-        createdAt
-      ),
-    _ => throw const FormatException('Failed to load comment'),
-    };
+    return Comment(
+      id: json['id'],
+      content: json['content'],
+      numberOfLikes: json['numberOfLikes'],
+      createdAt: DateTime.parse(json['createdAt']),
+      user: User.fromJson(json['user']),
+    );
   }
 }

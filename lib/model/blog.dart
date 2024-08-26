@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'comment.dart';
 import 'user.dart';
 
 class Blog {
@@ -11,6 +12,7 @@ class Blog {
   int numberOfLikes;
   User? user;
   String? picUrl;
+  List<Comment>? comments;
 
   Blog({
     required this.id,
@@ -22,6 +24,7 @@ class Blog {
     this.numberOfLikes = 0,
     this.user,
     this.picUrl,
+    this.comments
   });
 
   factory Blog.fromJson(Map<String, dynamic> json) {
@@ -34,6 +37,11 @@ class Blog {
       numberOfLikes: json['numberOfLikes'] ?? 0,
       picUrl: json['picUrl'],
       user: json['user'] != null ? User.fromJson(json['user']) : null,
+      comments: json['comments'] != null
+          ? (json['comments'] as List)
+          .map((commentJson) => Comment.fromJson(commentJson))
+          .toList()
+          : [],
     );
   }
 }

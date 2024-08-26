@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:in307_mobile_computing_blog/model/blog.dart';
-import 'package:in307_mobile_computing_blog/component/blog_card.dart';
 import 'package:provider/provider.dart';
-
+import '../api/blog_api.dart';
+import '../model/blog.dart';
 import '../provider/blog_provider.dart';
 import '../screens/blog_detail_view.dart';
+import 'blog_card.dart';
 
 class BlogListView extends StatelessWidget {
   final List<Blog> blogs;
@@ -23,7 +23,6 @@ class BlogListView extends StatelessWidget {
     return Consumer<BlogModel>(
       builder: (context, blogModel, child) {
         if (blogModel.blogs.isEmpty) {
-          // Handle the loading state
           return Center(child: CircularProgressIndicator());
         }
 
@@ -40,8 +39,7 @@ class BlogListView extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlogDetailView(
-                      blog: blogsToShow[index],
-                      blogModel: blogModel,
+                      blogId: blogsToShow[index].id, // Pass only the ID
                     ),
                   ),
                 );

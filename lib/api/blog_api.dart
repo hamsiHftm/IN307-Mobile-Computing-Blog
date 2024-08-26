@@ -44,4 +44,22 @@ class BlogApi {
       throw Exception('Failed to load blogs. Exception: $e');
     }
   }
+
+  Future<Blog?> getBlogById(int id) async {
+    try {
+      final response = await http.get(
+        Uri.http(_baseUrl, "/public/blog/$id"),
+        headers: _headers,
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body)['data'];
+        return Blog.fromJson(data);
+      } else {
+        throw Exception('Failed to load blog. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load blog. Exception: $e');
+    }
+  }
+
 }
