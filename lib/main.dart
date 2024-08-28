@@ -21,7 +21,7 @@ final ThemeData blogThemeLight = ThemeData(
   fontFamily: 'CenturyGothic',
   textTheme: const TextTheme(
     displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200),
     displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
     headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
     headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
@@ -46,18 +46,18 @@ final ThemeData blogThemeLight = ThemeData(
 final ThemeData blogThemeDark = ThemeData(
   brightness: Brightness.light,
   primaryColor: const Color(0xFFD12B41),
-  colorScheme: const ColorScheme.light(
-    primary: Color(0xFFD12B41), // Primary Color
-    secondary: Color(0xFF412349), // Secondary Color
-    surface: Colors.transparent, // Surface Color
-    onPrimary: Color(0xFFE4A49B),
-    onSecondary: Color(0xFF412349),
+  colorScheme: ColorScheme.light(
+    primary: const Color(0xFFD12B41), // Primary Color
+    secondary: const Color(0xFF412349), // Secondary Color
+    surface: Colors.white.withOpacity(0.2), // Surface Color
+    onPrimary: const Color(0xFFE4A49B),
+    onSecondary: const Color(0xFF412349),
     onSurface: Colors.white,
   ),
   fontFamily: 'CenturyGothic',
   textTheme: const TextTheme(
     displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200),
     displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
     headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
     headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
@@ -87,7 +87,7 @@ void main() {
         title: 'Blog-IN307',
         theme: blogThemeLight,
         darkTheme: blogThemeDark,
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         home: const DefaultTabController(
           length: 3,
           child: MyBlogListPage(),

@@ -21,10 +21,10 @@ class BlogCard extends StatelessWidget {
     final createdDate = timeago.format(blog.createdAt);
 
     return Card(
-      elevation: 0, // Removes the shadow
+      elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[300]!, width: 1), // Adds a border if needed
+        borderRadius: BorderRadius.circular(5),
+        side: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Padding(
@@ -35,7 +35,7 @@ class BlogCard extends StatelessWidget {
             // Left Column: Blog Picture
             if (blog.picUrl != null && blog.picUrl!.isNotEmpty)
               ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(6),
                 child: SizedBox(
                   width: 100,
                   height: 100,
@@ -44,11 +44,11 @@ class BlogCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: Colors.grey[300],
+                        color: Theme.of(context).colorScheme.surface,
                         child: Center(
                           child: Icon(
                             Icons.image,
-                            color: Colors.grey[600],
+                            color: Theme.of(context).colorScheme.onPrimary,
                             size: 40,
                           ),
                         ),
@@ -58,19 +58,20 @@ class BlogCard extends StatelessWidget {
                 ),
               )
             else
+              // pic place holder
               Container(
                 width: 100,
                 height: 100,
-                color: Colors.grey[300],
+                color: Theme.of(context).colorScheme.surface,
                 child: Center(
                   child: Icon(
                     Icons.image,
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onPrimary,
                     size: 40,
                   ),
                 ),
               ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 16), // space between blog image and blog details
             // Right Column: Blog Details
             Expanded(
               child: Column(
@@ -79,91 +80,60 @@ class BlogCard extends StatelessWidget {
                   // Blog Title
                   Text(
                     blog.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.headlineMedium,
+                    overflow: TextOverflow.clip,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 8), // space between row
                   // User Info: Name and Profile Pic
                   Row(
                     children: [
-                      // User Profile Picture
-                      ClipOval(
-                        child: SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: blog.user?.picUrl != null && blog.user!.picUrl!.isNotEmpty
-                              ? Image.network(
-                            blog.user!.picUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[300],
-                                child: Center(
-                                  child: Icon(
-                                    Icons.person,
-                                    color: Colors.grey[600],
-                                    size: 20,
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                              : Container(
-                            color: Colors.grey[300],
-                            child: Center(
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.grey[600],
-                                size: 20,
-                              ),
-                            ),
+                      // Conditionally use CircleAvatar for images, if pic not retrieved or available, display icon
+                      blog.user?.picUrl != null && blog.user!.picUrl!.isNotEmpty
+                          ? CircleAvatar(
+                        radius: 15,
+                        backgroundImage: NetworkImage(blog.user!.picUrl!),
+                      )
+                          : Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.person_2_outlined,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            size: 20,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      // User Name or Email
+                      const SizedBox(width: 8), // Spacing between the avatar and the text
                       Expanded(
                         child: Text(
                           userName,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 8), // space between row
                   // Blog Details: Likes and Creation Date (on the same line with a dot separator)
                   Row(
                     children: [
                       Text(
                         '${blog.numberOfLikes} Likes',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
+                          style: Theme.of(context).textTheme.bodySmall
                       ),
-                      const SizedBox(width: 4),
-                      const Text(
-                        '•',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
+                      const SizedBox(width: 4), // Spacing between the text
+                      Text(
+                        '•', style: Theme.of(context).textTheme.bodySmall
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 4), // Spacing between the text
                       Text(
                         createdDate,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall
                       ),
                     ],
                   ),
