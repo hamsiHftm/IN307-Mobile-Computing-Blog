@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/model/blog.dart';
-import 'package:in307_mobile_computing_blog/component/blog_list.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_list_view.dart';
 import 'package:in307_mobile_computing_blog/screens/profile_view.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 final ThemeData blogTheme = ThemeData(

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/component/blog_card.dart';
 import 'package:in307_mobile_computing_blog/model/blog.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../screens/blog_detail_view.dart';
 
 class BlogList extends StatelessWidget {
   final List<Blog> blogs;
@@ -15,10 +18,34 @@ class BlogList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: blogs.length,
-      itemBuilder: (context, index) {
-        return BlogCard(blog: blogs[index]);
+    return Consumer<BlogModel>(
+      builder: (context, blogModel, child) {
+        if (blogModel.blogs.isEmpty) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final blogsToShow = blogModel.blogs;
+
+        return ListView.builder(
+          itemCount: blogsToShow.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlogDetailView(
+                      blogId: blogsToShow[index].id,
+                    ),
+                  ),
+                );
+              },
+              child: BlogCard(
+                blog: blogsToShow[index],
+              ),
+            );
+          },
+        );
       },
     );
   }
