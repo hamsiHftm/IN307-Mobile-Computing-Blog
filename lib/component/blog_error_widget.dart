@@ -1,5 +1,6 @@
 // lib/component/error_widget.dart
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class BlogErrorWidget extends StatelessWidget {
   final String message;
@@ -17,10 +18,11 @@ class BlogErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.sentiment_dissatisfied,
-            size: 80,
-            color: Colors.grey,
+          // Lottie animation for a sad or error animation
+          Image.asset(
+            'assets/images/error.png',
+            width: 250,
+            height: 250,
           ),
           SizedBox(height: 20),
           Text(
@@ -32,9 +34,11 @@ class BlogErrorWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
+          IconButton(
+            icon: Icon(Icons.refresh),
+            color: Colors.blue,
+            iconSize: 30,
             onPressed: onRetry,
-            child: Text('Refresh'),
           ),
         ],
       ),

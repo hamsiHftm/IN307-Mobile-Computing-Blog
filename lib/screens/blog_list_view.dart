@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/component/blog_list.dart';
-import 'package:in307_mobile_computing_blog/component/blog_error_widget.dart'; // Import the BlogErrorWidget
+import 'package:in307_mobile_computing_blog/component/loading_widget.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../component/blog_error_widget.dart';
 
 class BlogListView extends StatefulWidget {
   final bool favoritesOnly;
@@ -55,7 +57,7 @@ class _BlogListViewState extends State<BlogListView> {
                 onRetry: _refresh,
               );
             } else if (blogModel.blogs.isEmpty) {
-              return Center(child: CircularProgressIndicator());
+              return LoadingWidget();
             }
 
             return NotificationListener<ScrollNotification>(
