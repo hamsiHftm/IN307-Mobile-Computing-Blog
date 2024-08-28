@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +41,7 @@ class _BlogDetailViewState extends State<BlogDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlogScaffoldWidget(
       body: FutureBuilder<Blog?>(
         future: _futureBlog,
         builder: (context, snapshot) {
