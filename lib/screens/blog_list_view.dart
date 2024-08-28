@@ -43,11 +43,7 @@ class _BlogListViewState extends State<BlogListView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Blogs'),
-      ),
-      body: RefreshIndicator(
+    return RefreshIndicator(
         onRefresh: _refresh,
         child: Consumer<BlogModel>(
           builder: (context, blogModel, child) {
@@ -75,7 +71,6 @@ class _BlogListViewState extends State<BlogListView> {
             );
           },
         ),
-      ),
-    );
+      );
   }
 }

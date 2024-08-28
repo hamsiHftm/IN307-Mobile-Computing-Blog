@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../model/blog.dart';
-import '../model/comment.dart';
 import '../provider/blog_provider.dart';
 import '../api/blog_api.dart';
 import 'blog_form_view.dart';

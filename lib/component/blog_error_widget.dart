@@ -1,6 +1,5 @@
 // lib/component/error_widget.dart
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class BlogErrorWidget extends StatelessWidget {
   final String message;

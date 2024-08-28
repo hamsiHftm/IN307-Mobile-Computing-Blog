@@ -48,11 +48,7 @@ class _BlogFormViewState extends State<BlogFormView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.blog == null ? 'Add Blog Entry' : 'Edit Blog Entry'),
-      ),
-      body: Padding(
+    return Padding(
         padding: const EdgeInsets.all(20.0),
         child: Form(
           key: _formKey,
@@ -95,7 +91,6 @@ class _BlogFormViewState extends State<BlogFormView> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
