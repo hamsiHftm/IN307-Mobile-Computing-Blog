@@ -9,9 +9,10 @@ class BlogScaffoldWidget extends StatelessWidget {
   final VoidCallback? onAddBlogPressed;
   final Widget? bottomNavigationBar;
   final bool showBackButton;
+  final bool disableAppBar; // New parameter to control visibility of the app bar
 
   const BlogScaffoldWidget({
-    Key? key,
+    super.key,
     required this.body,
     this.tabController,
     this.onProfilePressed,
@@ -19,7 +20,8 @@ class BlogScaffoldWidget extends StatelessWidget {
     this.onAddBlogPressed,
     this.bottomNavigationBar,
     this.showBackButton = false,
-  }) : super(key: key);
+    this.disableAppBar = false, // Default value is false (app bar is shown by default)
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +30,8 @@ class BlogScaffoldWidget extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.secondary
+              Theme.of(context).colorScheme.onPrimaryContainer,
+              Theme.of(context).colorScheme.onSecondaryContainer
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
@@ -37,13 +39,15 @@ class BlogScaffoldWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            BlogAppBarWidget(
-              tabController: tabController,
-              onProfilePressed: onProfilePressed,
-              onSearchPressed: onSearchPressed,
-              onAddBlogPressed: onAddBlogPressed,
-              showBackButton: showBackButton,
-            ),
+            // Conditionally render the app bar based on disableAppBar
+            if (!disableAppBar)
+              BlogAppBarWidget(
+                tabController: tabController,
+                onProfilePressed: onProfilePressed,
+                onSearchPressed: onSearchPressed,
+                onAddBlogPressed: onAddBlogPressed,
+                showBackButton: showBackButton,
+              ),
             Expanded(child: body),
           ],
         ),

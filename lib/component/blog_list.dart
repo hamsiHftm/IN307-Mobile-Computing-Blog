@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:in307_mobile_computing_blog/component/blog_card.dart';
+import 'package:in307_mobile_computing_blog/component/blog_card_widget.dart';
+import 'package:in307_mobile_computing_blog/component/loading_widget.dart';
 import 'package:in307_mobile_computing_blog/model/blog.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
+import 'package:in307_mobile_computing_blog/screens/blog_info_view.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/blog_detail_view.dart';
@@ -21,30 +23,33 @@ class BlogList extends StatelessWidget {
     return Consumer<BlogModel>(
       builder: (context, blogModel, child) {
         if (blogModel.blogs.isEmpty) {
-          return Center(child: CircularProgressIndicator());
+          return const LoadingWidget();
         }
 
         final blogsToShow = blogModel.blogs;
 
-        return ListView.builder(
-          itemCount: blogsToShow.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BlogDetailView(
-                      blogId: blogsToShow[index].id,
+        return Container(
+          color: Theme.of(context).colorScheme.tertiary,
+          child: ListView.builder(
+            itemCount: blogsToShow.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlogDetailView(
+                        blogId: blogsToShow[index].id,
+                      ),
                     ),
-                  ),
-                );
-              },
-              child: BlogCard(
-                blog: blogsToShow[index],
-              ),
-            );
-          },
+                  );
+                },
+                child: BlogCardWidget(
+                  blog: blogsToShow[index],
+                ),
+              );
+            },
+          ),
         );
       },
     );

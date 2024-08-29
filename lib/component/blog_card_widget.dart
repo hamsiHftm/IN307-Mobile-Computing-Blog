@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:in307_mobile_computing_blog/component/profile_icon_widget.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:in307_mobile_computing_blog/model/blog.dart';
 
-class BlogCard extends StatelessWidget {
-  const BlogCard({
+class BlogCardWidget extends StatelessWidget {
+  const BlogCardWidget({
     super.key,
     required this.blog,
   });
@@ -12,11 +13,6 @@ class BlogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // User's display name logic
-    final userName = (blog.user?.firstname?.isNotEmpty == true && blog.user?.lastname?.isNotEmpty == true)
-        ? '${blog.user!.firstname} ${blog.user!.lastname}'
-        : blog.user?.email ?? 'Unknown user';
-
     // Format the relative creation date
     final createdDate = timeago.format(blog.createdAt);
 
@@ -87,31 +83,13 @@ class BlogCard extends StatelessWidget {
                   // User Info: Name and Profile Pic
                   Row(
                     children: [
-                      // Conditionally use CircleAvatar for images, if pic not retrieved or available, display icon
-                      blog.user?.picUrl != null && blog.user!.picUrl!.isNotEmpty
-                          ? CircleAvatar(
-                        radius: 15,
-                        backgroundImage: NetworkImage(blog.user!.picUrl!),
-                      )
-                          : Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.person_2_outlined,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            size: 20,
-                          ),
-                        ),
+                      ProfileIconWidget(
+                        picUrl: blog.user?.picUrl,
                       ),
                       const SizedBox(width: 8), // Spacing between the avatar and the text
                       Expanded(
                         child: Text(
-                          userName,
+                          blog.user!.getDisplayName(),
                           style: Theme.of(context).textTheme.bodyMedium,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -124,16 +102,16 @@ class BlogCard extends StatelessWidget {
                     children: [
                       Text(
                         '${blog.numberOfLikes} Likes',
-                          style: Theme.of(context).textTheme.bodySmall
+                          style: Theme.of(context).textTheme.labelSmall
                       ),
                       const SizedBox(width: 4), // Spacing between the text
                       Text(
-                        '•', style: Theme.of(context).textTheme.bodySmall
+                        '•', style: Theme.of(context).textTheme.labelSmall
                       ),
                       const SizedBox(width: 4), // Spacing between the text
                       Text(
                         createdDate,
-                        style: Theme.of(context).textTheme.bodySmall
+                        style: Theme.of(context).textTheme.labelSmall
                       ),
                     ],
                   ),

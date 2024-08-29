@@ -12,26 +12,29 @@ final ThemeData blogThemeLight = ThemeData(
   primaryColor: const Color(0xFFD12B41),
   colorScheme: const ColorScheme.light(
     primary: Color(0xFFD12B41), // Primary Color
-    secondary: Color(0xFF412349), // Secondary Color
+    secondary: Color(0xFF412349),
+    tertiary: Colors.white,// Secondary Color
+    onPrimaryContainer: Color(0xFFD12B41), // Primary Color
+    onSecondaryContainer: Color(0xFF412349),
     surface: Colors.white, // Surface Color
     onPrimary: Color(0xFFE4A49B),
     onSecondary: Color(0xFF412349),
-    onSurface: Colors.white,
+    onSurface: Color(0xFF412349),
   ),
   fontFamily: 'CenturyGothic',
   textTheme: const TextTheme(
-    displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200),
-    displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-    headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-    headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-    headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
-    bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-    bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
-    bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.normal),
-    labelLarge: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
-    labelMedium: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
-    labelSmall: TextStyle(fontSize: 10.0, fontWeight: FontWeight.w600),
+    displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold, color: Color(0xFFD12B41)),
+    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200, color: Color(0xFFD12B41)),
+    displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w200, color: Color(0xFFD12B41)),
+    headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600, color: Color(0xFFD12B41)),
+    headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Color(0xFFD12B41)),
+    headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Color(0xFFD12B41)),
+    bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal, color: Color(0xFF412349)),
+    bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal, color: Color(0xFFE4A49B)),
+    bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.normal, color: Color(0xFF412349)),
+    labelLarge: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: Color(0xFFE4A49B)),
+    labelMedium: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Color(0xFFE4A49B)),
+    labelSmall: TextStyle(fontSize: 10.0, fontWeight: FontWeight.w600, color: Color(0xFFE4A49B)),
   ),
   tabBarTheme: TabBarTheme(
     indicator: BoxDecoration(
@@ -47,8 +50,11 @@ final ThemeData blogThemeDark = ThemeData(
   brightness: Brightness.light,
   primaryColor: const Color(0xFFD12B41),
   colorScheme: ColorScheme.light(
-    primary: const Color(0xFFD12B41), // Primary Color
-    secondary: const Color(0xFF412349), // Secondary Color
+    primary: Colors.white, // Primary Color
+    secondary: const Color(0xFF412349),
+    tertiary: Colors.transparent,
+    onPrimaryContainer: const Color(0xFFD12B41), // Primary Color
+    onSecondaryContainer: const Color(0xFF412349),// Secondary Color
     surface: Colors.white.withOpacity(0.2), // Surface Color
     onPrimary: const Color(0xFFE4A49B),
     onSecondary: const Color(0xFF412349),
@@ -56,18 +62,18 @@ final ThemeData blogThemeDark = ThemeData(
   ),
   fontFamily: 'CenturyGothic',
   textTheme: const TextTheme(
-    displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold),
-    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200),
-    displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold),
-    headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-    headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-    headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
-    bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-    bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
-    bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.normal),
-    labelLarge: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
-    labelMedium: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
-    labelSmall: TextStyle(fontSize: 10.0, fontWeight: FontWeight.w600),
+    displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold, color: Colors.white),
+    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200, color: Colors.white),
+    displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w200, color: Colors.white),
+    headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.white),
+    headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.white),
+    headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
+    bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.white),
+    bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal, color: Colors.white),
+    bodySmall: TextStyle(fontSize: 12.0, fontWeight: FontWeight.normal, color: Colors.white),
+    labelLarge: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.white),
+    labelMedium: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600, color: Colors.white),
+    labelSmall: TextStyle(fontSize: 10.0, fontWeight: FontWeight.w600, color: Colors.white),
   ),
   tabBarTheme: TabBarTheme(
     indicator: BoxDecoration(
@@ -87,7 +93,7 @@ void main() {
         title: 'Blog-IN307',
         theme: blogThemeLight,
         darkTheme: blogThemeDark,
-        themeMode: ThemeMode.dark,
+        themeMode: ThemeMode.light,
         home: const DefaultTabController(
           length: 3,
           child: MyBlogListPage(),
@@ -182,7 +188,7 @@ class _MyBlogListPageState extends State<MyBlogListPage>
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary], // Customize the gradient colors
+            colors: [Theme.of(context).colorScheme.onPrimaryContainer, Theme.of(context).colorScheme.onSecondaryContainer], // Customize the gradient colors
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),

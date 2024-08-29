@@ -1,46 +1,55 @@
-// lib/component/error_widget.dart
 import 'package:flutter/material.dart';
+import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart';
 
 class BlogErrorWidget extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
+  final bool withScaffold;
 
   const BlogErrorWidget({
-    Key? key,
+    super.key,
     required this.message,
     required this.onRetry,
-  }) : super(key: key);
+    this.withScaffold = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    Widget content = Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Lottie animation for a sad or error animation
           Image.asset(
             'assets/images/error.png',
             width: 250,
             height: 250,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 8),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.red,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: Colors.white
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 8),
           IconButton(
-            icon: Icon(Icons.refresh),
-            color: Colors.blue,
+            icon: const Icon(Icons.refresh),
+            color: Colors.white,
             iconSize: 30,
             onPressed: onRetry,
           ),
         ],
       ),
     );
+
+    if (withScaffold) {
+      return BlogScaffoldWidget(
+        showBackButton: true,
+        body: content,
+      );
+    } else {
+      return content;
+    }
   }
 }

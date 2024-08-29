@@ -21,4 +21,8 @@ class User {
       lastname: json['lastname'],
     );
   }
+
+  String getDisplayName() {
+    return (firstname?.isNotEmpty == true && lastname?.isNotEmpty == true) ? '$firstname $lastname' : email ?? 'Unknown user';
+  }
 }
