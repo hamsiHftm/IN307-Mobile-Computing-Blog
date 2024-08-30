@@ -7,6 +7,8 @@ import 'package:in307_mobile_computing_blog/screens/blog_list_view.dart';
 import 'package:in307_mobile_computing_blog/screens/profile_view.dart';
 import 'package:provider/provider.dart';
 
+import 'model/user.dart';
+
 final ThemeData blogThemeLight = ThemeData(
   brightness: Brightness.light,
   primaryColor: const Color(0xFFD12B41),
@@ -93,7 +95,7 @@ void main() {
         title: 'Blog-IN307',
         theme: blogThemeLight,
         darkTheme: blogThemeDark,
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.system,
         home: const DefaultTabController(
           length: 3,
           child: MyBlogListPage(),
@@ -121,9 +123,18 @@ class _MyBlogListPageState extends State<MyBlogListPage>
   }
 
   void _openProfilePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfileView()),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProfileView(
+          user: User(
+            id: 1,
+            email: 'test@test.ch',
+            firstname: 'test',
+            lastname: 'jjsj',
+          ),
+          totalBlogs: 30,
+        ),
+      ),
     );
   }
 

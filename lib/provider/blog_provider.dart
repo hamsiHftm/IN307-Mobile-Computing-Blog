@@ -11,7 +11,7 @@ class BlogModel extends ChangeNotifier {
   List<Blog> get blogs => _blogs;
 
   BlogModel() {
-    fetchBlogs(); // Fetch blogs when the model is created
+    // fetchBlogs(); // Fetch blogs when the model is created
   }
 
   Future<void> fetchBlogs({bool refresh = false}) async {
