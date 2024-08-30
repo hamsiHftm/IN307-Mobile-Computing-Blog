@@ -13,13 +13,22 @@ class BlogApi {
     'Accept': '*/*'
   };
 
-  Future<List<Blog>> getBlogs({int limit = 10, int offset = 0, bool favoritesOnly = false}) async {
+  Future<List<Blog>> getBlogs({
+    int limit = 10,
+    int offset = 0,
+    bool favoritesOnly = false,
+    String searchTitle = '',
+    String? userId, // Optional userId parameter
+    String orderBy = 'createdAt',
+    bool asc = true,
+  }) async {
     var queryParameters = {
       'limit': '$limit',
       'offset': '$offset',
-      'asc': 'true',
-      'orderBy': 'createdAt',
-      'searchTitle': ''
+      'asc': '$asc',
+      'orderBy': orderBy,
+      'searchTitle': searchTitle,
+      if (userId != null) 'userId': userId, // Add userId if it's not null
     };
 
     try {
