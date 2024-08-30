@@ -95,6 +95,7 @@ class _BlogDetailViewState extends State<BlogDetailView> {
   Widget build(BuildContext context) {
     return BlogScaffoldWidget(
       showBackButton: true,
+
       body: FutureBuilder<Blog?>(
         future: _futureBlog,
         builder: (context, snapshot) {
