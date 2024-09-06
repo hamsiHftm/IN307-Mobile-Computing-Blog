@@ -47,6 +47,60 @@ final ThemeData blogThemeLight = ThemeData(
     unselectedLabelColor: Colors.white, // Color for the unselected tab's icon and text
     indicatorSize: TabBarIndicatorSize.tab,
   ),
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      foregroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.hovered)) {
+          return const Color(0xFFD12B41);
+        } else if (states.contains(WidgetState.pressed)) {
+          return const Color(0xFFE4A49B); // Pressed color
+        }
+        return const Color(0xFF412349); // Default text color
+      }),
+      backgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.hovered)) {
+          return const Color(0xFF412349).withOpacity(0.1); // Background color on hover
+        } else if (states.contains(WidgetState.pressed)) {
+          return const Color(0xFF412349).withOpacity(0.2); // Background color on pressed
+        }
+        return Colors.transparent; // Default background color
+      }),
+      overlayColor: WidgetStateProperty.all(const Color(0xFF412349).withOpacity(0.1)), // Ripple effect
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0), // Rounded corners
+        ),
+      ),
+      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      ),
+    ),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.disabled)) {
+          return Colors.grey; // Background color when the button is disabled
+        }
+        return const Color(0xFFD12B41); // Default background color
+      }),
+      foregroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.disabled)) {
+          return Colors.white; // Text color when the button is disabled
+        }
+        return Colors.white; // Text color for all other states
+      }),
+      overlayColor: WidgetStateProperty.all(const Color(0xFF412349).withOpacity(0.1)), // Ripple effect
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0), // Rounded corners
+        ),
+      ),
+      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      ),
+    ),
+  ),
 );
 
 final ThemeData blogThemeDark = ThemeData(
@@ -87,8 +141,59 @@ final ThemeData blogThemeDark = ThemeData(
     indicatorSize: TabBarIndicatorSize.tab,
   ),
   textButtonTheme: TextButtonThemeData(
-    // TODO add textbutton. add Color and hover and effect.
-  )
+    style: ButtonStyle(
+      foregroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.hovered)) {
+          return const Color(0xFFD12B41);
+        } else if (states.contains(WidgetState.pressed)) {
+          return const Color(0xFFE4A49B); // Pressed color
+        }
+        return const Color(0xFF412349); // Default text color
+      }),
+      backgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.hovered)) {
+          return const Color(0xFF412349).withOpacity(0.1); // Background color on hover
+        } else if (states.contains(WidgetState.pressed)) {
+          return const Color(0xFF412349).withOpacity(0.2); // Background color on pressed
+        }
+        return Colors.transparent; // Default background color
+      }),
+      overlayColor: WidgetStateProperty.all(const Color(0xFF412349).withOpacity(0.1)), // Ripple effect
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0), // Rounded corners
+        ),
+      ),
+      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      ),
+    ),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.disabled)) {
+          return Colors.grey; // Background color when the button is disabled
+        }
+        return const Color(0xFFD12B41); // Default background color
+      }),
+      foregroundColor: WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.disabled)) {
+          return Colors.white; // Text color when the button is disabled
+        }
+        return Colors.white; // Text color for all other states
+      }),
+      overlayColor: WidgetStateProperty.all(const Color(0xFF412349).withOpacity(0.1)), // Ripple effect
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0), // Rounded corners
+        ),
+      ),
+      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      ),
+    ),
+  ),
 );
 
 void main() {
