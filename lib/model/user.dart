@@ -19,6 +19,7 @@ class User {
       email: json['email'],
       firstname: json['firstname'],
       lastname: json['lastname'],
+      picUrl: json['picUrl']
     );
   }
 

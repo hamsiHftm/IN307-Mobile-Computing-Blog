@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart';
+import 'package:in307_mobile_computing_blog/component/blog_search_dialog_widget.dart';
 import 'package:in307_mobile_computing_blog/model/blog.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
@@ -65,8 +66,8 @@ final ThemeData blogThemeDark = ThemeData(
   fontFamily: 'CenturyGothic',
   textTheme: const TextTheme(
     displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold, color: Colors.white),
-    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200, color: Colors.white),
-    displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w200, color: Colors.white),
+    displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200, color:  Color(0xFFD12B41)),
+    displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w200, color: Color(0xFFD12B41)),
     headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.white),
     headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.white),
     headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
@@ -85,6 +86,9 @@ final ThemeData blogThemeDark = ThemeData(
     unselectedLabelColor: Colors.white, // Color for the unselected tab's icon and text
     indicatorSize: TabBarIndicatorSize.tab,
   ),
+  textButtonTheme: TextButtonThemeData(
+    // TODO add textbutton. add Color and hover and effect.
+  )
 );
 
 void main() {
@@ -141,20 +145,13 @@ class _MyBlogListPageState extends State<MyBlogListPage>
   void _openSearchForm() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Search Blog'),
-        content: TextField(
-          decoration: InputDecoration(hintText: 'Enter blog title'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Search'),
-          ),
-        ],
-      ),
+      builder: (context) => BlogSearchDialog(
+        onSearch: (searchTerm) {
+          // TODO
+          print('Searching for: $searchTerm');
+        },
+
+      )
     );
   }
 

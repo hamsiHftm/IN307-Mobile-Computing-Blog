@@ -73,4 +73,25 @@ class BlogApi {
     }
   }
 
+  // TODO
+  Future<Blog> updateBlog(Blog blog) async {
+    try {
+      var body = "";
+      final response = await http.patch(
+          Uri.http(_baseUrl, "/public/blog/${blog.id}"),
+          headers: _headers,
+          body: body
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body)['data'];
+        return Blog.fromJson(data);
+      } else {
+        throw Exception('Failed to load blog. Status code: ${response.statusCode}');
+      }
+        return blog;
+    } catch (e) {
+      throw Exception('Failed to update blog. Exception: $e');
+    }
+  }
+
 }
