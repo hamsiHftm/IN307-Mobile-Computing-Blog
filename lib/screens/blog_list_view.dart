@@ -21,7 +21,9 @@ class _BlogListViewState extends State<BlogListView> {
   @override
   void initState() {
     super.initState();
-    _fetchBlogs();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchBlogs();
+    });
   }
 
   Future<void> _fetchBlogs({bool refresh = false}) async {
@@ -44,6 +46,11 @@ class _BlogListViewState extends State<BlogListView> {
     await _fetchBlogs(refresh: true); // Refresh blog list
   }
 
+  void _clearFilter() {
+    // Clear the search term and refresh the blog list
+    _fetchBlogs(refresh: true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -57,14 +64,15 @@ class _BlogListViewState extends State<BlogListView> {
             );
           }
 
-          if (blogModel.isFetching && blogModel.blogs.isEmpty) {
-            // Show loading widget only if still fetching and no blogs to display
-            return Center(child: LoadingWidget());
-          }
+          // Determine if the clear filter button should be shown
+          final showClearFilterButton = blogModel.searchTerm.isNotEmpty;
 
-          if (blogModel.blogs.isEmpty) {
-            // No blogs and not fetching anymore means we show the "no blogs" image
-            return Center(
+          // Determine which content to display
+          Widget content;
+          if (blogModel.isFetching && blogModel.blogs.isEmpty) {
+            content = Center(child: LoadingWidget());
+          } else if (blogModel.blogs.isEmpty) {
+            content = Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -77,21 +85,35 @@ class _BlogListViewState extends State<BlogListView> {
                 ],
               ),
             );
+          } else {
+            content = NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                  _fetchBlogs(); // Load more blogs when scrolling to the bottom
+                  return true;
+                }
+                return false;
+              },
+              child: BlogList(
+                blogs: blogModel.blogs,
+                blogModel: blogModel,
+              ),
+            );
           }
 
-          // If blogs are available, show the blog list
-          return NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                _fetchBlogs(); // Load more blogs when scrolling to the bottom
-                return true;
-              }
-              return false;
-            },
-            child: BlogList(
-              blogs: blogModel.blogs,
-              blogModel: blogModel,
-            ),
+          // Build the final layout
+          return Column(
+            children: [
+              if (showClearFilterButton) // Show the button only if the search term is not empty
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: _clearFilter,
+                    child: const Text("Clear Filter"),
+                  ),
+                ),
+              Expanded(child: content),
+            ],
           );
         },
       ),

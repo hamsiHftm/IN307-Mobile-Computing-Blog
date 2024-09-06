@@ -8,10 +8,12 @@ class BlogModel extends ChangeNotifier {
   final int _limit = 10;
   bool _isFetching = false;
   bool _hasMoreBlogs = true;
+  String _searchTerm = '';
 
   List<Blog> get blogs => _blogs;
   bool get hasMoreBlogs => _hasMoreBlogs;
   bool get isFetching => _isFetching;
+  String get searchTerm => _searchTerm;
 
   BlogModel() {
     // fetchBlogs(); // Fetch blogs when the model is created
@@ -24,6 +26,7 @@ class BlogModel extends ChangeNotifier {
     String orderBy = 'createdAt',
     bool asc = true,
   }) async {
+    _searchTerm = searchTitle;
     if (refresh) {
       _blogs = []; // Clear the blog list before loading new data
       _offset = 0;
