@@ -27,7 +27,7 @@ class BlogApi {
       'offset': '$offset',
       'asc': '$asc',
       'orderBy': orderBy,
-      'searchTitle': searchTitle,
+      'searchTitle': Uri.encodeComponent(searchTitle),
       if (userId != null) 'userId': userId, // Add userId if it's not null
     };
 

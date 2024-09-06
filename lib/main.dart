@@ -252,8 +252,12 @@ class _MyBlogListPageState extends State<MyBlogListPage>
       context: context,
       builder: (context) => BlogSearchDialog(
         onSearch: (searchTerm) {
-          // TODO
-          print('Searching for: $searchTerm');
+          // When a search term is provided, update the blog list view
+          Provider.of<BlogModel>(context, listen: false).fetchBlogs(
+            refresh: true, // Refresh the list when searching
+            searchTitle: searchTerm, // Pass the search term to filter the blogs
+          );
+          print('Searching for: $searchTerm'); // Debug print to show the search term
         },
 
       )

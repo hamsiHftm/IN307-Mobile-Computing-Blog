@@ -3,6 +3,7 @@ import 'package:in307_mobile_computing_blog/component/blog_list.dart';
 import 'package:in307_mobile_computing_blog/component/loading_widget.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:provider/provider.dart';
+
 import '../component/blog_error_widget.dart';
 
 class BlogListView extends StatefulWidget {
@@ -16,7 +17,6 @@ class BlogListView extends StatefulWidget {
 
 class _BlogListViewState extends State<BlogListView> {
   String? _errorMessage;
-  bool _isLoading = true; // Track loading state
 
   @override
   void initState() {
@@ -26,27 +26,22 @@ class _BlogListViewState extends State<BlogListView> {
 
   Future<void> _fetchBlogs({bool refresh = false}) async {
     setState(() {
-      _isLoading = true; // Set loading state to true while fetching data
+      _errorMessage = null; // Clear any previous error message
     });
 
     try {
-      await Provider.of<BlogModel>(context, listen: false).fetchBlogs(refresh: refresh);
+      await Provider.of<BlogModel>(context, listen: false).fetchBlogs(
+        refresh: refresh, // If true, reset the blogs list
+      );
     } catch (e) {
       setState(() {
         _errorMessage = 'Something went wrong. Cannot fetch blogs. Please try again later.';
-      });
-    } finally {
-      setState(() {
-        _isLoading = false; // Reset loading state after fetching data
       });
     }
   }
 
   Future<void> _refresh() async {
-    setState(() {
-      _errorMessage = null; // Clear error message on refresh
-    });
-    await _fetchBlogs(refresh: true);
+    await _fetchBlogs(refresh: true); // Refresh blog list
   }
 
   @override
@@ -58,19 +53,23 @@ class _BlogListViewState extends State<BlogListView> {
           if (_errorMessage != null) {
             return BlogErrorWidget(
               message: _errorMessage!,
-              onRetry: _refresh,
+              onRetry: _refresh, // Optionally retry on error
             );
-          } else if (_isLoading) {
-            // Show loading widget while fetching data
+          }
+
+          if (blogModel.isFetching && blogModel.blogs.isEmpty) {
+            // Show loading widget only if still fetching and no blogs to display
             return Center(child: LoadingWidget());
-          } else if (blogModel.blogs.isEmpty) {
-            // Show image if no blogs are available
+          }
+
+          if (blogModel.blogs.isEmpty) {
+            // No blogs and not fetching anymore means we show the "no blogs" image
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/images/no_comment.png'), // Image when no blogs are available
-                  const SizedBox(height: 20), // Space between image and text
+                  Image.asset('assets/images/no_comment.png'),
+                  const SizedBox(height: 20),
                   const Text(
                     'No blogs available.',
                     style: TextStyle(fontSize: 18, color: Colors.grey),
@@ -80,10 +79,11 @@ class _BlogListViewState extends State<BlogListView> {
             );
           }
 
+          // If blogs are available, show the blog list
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                _fetchBlogs();
+                _fetchBlogs(); // Load more blogs when scrolling to the bottom
                 return true;
               }
               return false;

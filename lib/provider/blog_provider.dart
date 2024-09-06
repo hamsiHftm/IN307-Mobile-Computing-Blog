@@ -24,12 +24,16 @@ class BlogModel extends ChangeNotifier {
     String orderBy = 'createdAt',
     bool asc = true,
   }) async {
-    if (_isFetching || !_hasMoreBlogs) return; // Prevent fetching while already fetching or if no more blogs
     if (refresh) {
+      _blogs = []; // Clear the blog list before loading new data
       _offset = 0;
-      _hasMoreBlogs = true; // Reset when refreshing
+      _hasMoreBlogs = true;
+      notifyListeners(); // Notify listeners to update UI immediately
     }
+
+    if (_isFetching || !_hasMoreBlogs) return; // Prevent duplicate fetching
     _isFetching = true;
+    notifyListeners(); // Notify UI that fetching has started
 
     try {
       final List<Blog> newBlogs = await BlogApi.instance.getBlogs(
@@ -41,24 +45,20 @@ class BlogModel extends ChangeNotifier {
         asc: asc,
       );
 
-      if (refresh) {
-        _blogs = newBlogs; // Replace current blogs with new data on refresh
-      } else {
-        _blogs.addAll(newBlogs); // Add new blogs to the existing list
-      }
+      _blogs.addAll(newBlogs);
 
       if (newBlogs.length < _limit) {
         _hasMoreBlogs = false; // No more blogs available
       } else {
-        _offset += newBlogs.length; // Update the offset for pagination
+        _offset += newBlogs.length; // Update offset for pagination
       }
-
-      notifyListeners(); // Notify listeners that the data has changed
     } catch (e) {
-      print("Error fetching blogs: $e");
-      throw e;
+      notifyListeners();
+      // Handle error: throw exception or set an error message to show in the UI
+      throw e; // This will be caught in _fetchBlogs method in BlogListView
     } finally {
-      _isFetching = false; // Reset fetching state
+      _isFetching = false; // Reset fetching state after the process is done
+      notifyListeners(); // Notify listeners that fetching is complete
     }
   }
 
