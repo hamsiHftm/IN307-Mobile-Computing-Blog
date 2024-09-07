@@ -3,6 +3,7 @@ import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart'
 import 'package:in307_mobile_computing_blog/component/blog_search_dialog_widget.dart';
 import 'package:in307_mobile_computing_blog/model/blog.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
+import 'package:in307_mobile_computing_blog/provider/user_provider.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_list_view.dart';
 import 'package:in307_mobile_computing_blog/screens/login_view.dart';
@@ -199,8 +200,11 @@ final ThemeData blogThemeDark = ThemeData(
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => BlogModel(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()), // Add UserProvider here
+        ChangeNotifierProvider(create: (context) => BlogModel()), // Existing provider
+      ],
       child: MaterialApp(
         title: 'Blog-IN307',
         theme: blogThemeLight,
@@ -210,6 +214,11 @@ void main() {
           length: 3,
           child: MyBlogListPage(),
         ),
+        // Define routes for navigation if needed
+        routes: {
+          '/login': (context) => const LoginView(),
+          // Define other routes as needed
+        },
       ),
     ),
   );

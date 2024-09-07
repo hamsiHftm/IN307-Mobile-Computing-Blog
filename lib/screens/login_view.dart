@@ -16,6 +16,7 @@ class _LoginViewState extends State<LoginView> {
   bool _isLoading = false;
 
   Future<void> _login() async {
+    FocusScope.of(context).unfocus();
     setState(() {
       _isLoading = true;
     });
@@ -26,13 +27,17 @@ class _LoginViewState extends State<LoginView> {
     );
 
     if (success) {
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pop();
     } else {
       setState(() {
         _isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Login failed. Please try again.'),
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            'Login failed. Please try again.',
+          style: TextStyle(color: Colors.red),
+
+        ),
       ));
     }
   }
@@ -58,7 +63,7 @@ class _LoginViewState extends State<LoginView> {
             ),
             const SizedBox(height: 60),
             _isLoading
-                ? CircularProgressIndicator()
+                ? const CircularProgressIndicator()
                 : ElevatedButton(
               onPressed: _login,
               child: Text('Login'),

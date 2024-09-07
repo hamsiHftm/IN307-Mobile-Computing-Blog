@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 class UserApi{
   // Static instance + private Constructor for simple Singleton-approach
   static UserApi instance = UserApi._privateConstructor();
-
   UserApi._privateConstructor();
 
   static const String _baseUrl = "10.0.2.2:8080";
@@ -14,15 +13,25 @@ class UserApi{
     'Accept': '*/*'
   };
 
-  Future<User> login() async {
+  Future<User> login(String email, String password) async {
     try {
-      final response = await http.get(
-        Uri.http(_baseUrl, "/user/login"),
-        headers: _headers,
+      final body = jsonEncode({
+        'email': email,
+        'password': password,
+      });
+
+      final response = await http.post(
+        Uri.http(_baseUrl, "/auth/login"),
+        headers: _headers, body: body
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body)['data'];
-        return User.fromJson(data);
+        var isSuccess = jsonDecode(response.body)['isSuccess'];
+        if (isSuccess) {
+          return User.fromJson(data);
+        } else {
+          throw Exception(data['errorMsg']);
+        }
       } else {
         throw Exception('Failed to load blog. Status code: ${response.statusCode}');
       }
