@@ -40,5 +40,22 @@ class UserProvider with ChangeNotifier {
     notifyListeners(); // Notify listeners about the logout
   }
 
-  signUp(String text, String text2, String text3, String text4) {}
+  signUp({required String email, required String password, String firstname = '', String lastname = ''}) async {
+    try {
+      // Call the UserApi to perform the login
+      _user = await UserApi.instance.signup(email: email, password: password, firstname: firstname, lastname: lastname);
+      // If login is successful, update login state and notify listeners
+      _isLoggedIn = true;
+      _errorMessage = null; // Clear previous error messages
+      notifyListeners();
+      return true;
+    } catch (e) {
+      // Capture the error message from the exception and return false
+      _errorMessage = e.toString();
+      _isLoggedIn = false;
+      _user = null;
+      notifyListeners(); // Notify listeners about the error state
+      return false;
+    }
+  }
 }

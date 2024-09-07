@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart';
-import 'package:in307_mobile_computing_blog/model/blog.dart';
-import 'package:http/http.dart' as http;
+
+import '../model/blog.dart';
 
 class BlogFormView extends StatefulWidget {
-  final Function({required Blog newBlog, Blog? oldBlog}) onSave;
   final Blog? blog;
 
-  BlogFormView({Key? key, required this.onSave, this.blog}) : super(key: key);
+  const BlogFormView({Key? key, this.blog}) : super(key: key);
 
   @override
-  State<BlogFormView> createState() => _BlogFormViewState();
+  _BlogFormViewState createState() => _BlogFormViewState();
 }
 
 class _BlogFormViewState extends State<BlogFormView> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late TextEditingController _picUrlController;
-  String? _picUrl; // To store the picture URL for preview
-  bool _isFetchingPic = false;
-  bool _isPicLoading = false;
-  bool _picFetchedSuccessfully = true;
+
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -29,12 +26,6 @@ class _BlogFormViewState extends State<BlogFormView> {
     _titleController = TextEditingController(text: widget.blog?.title ?? '');
     _contentController = TextEditingController(text: widget.blog?.content ?? '');
     _picUrlController = TextEditingController(text: widget.blog?.picUrl ?? '');
-    _picUrl = widget.blog?.picUrl;
-
-    // Fetch image if URL is provided
-    if (_picUrl != null && _picUrl!.isNotEmpty) {
-      _fetchPic(_picUrl!);
-    }
   }
 
   @override
@@ -45,135 +36,186 @@ class _BlogFormViewState extends State<BlogFormView> {
     super.dispose();
   }
 
-  Future<void> _fetchPic(String url) async {
-    setState(() {
-      _isFetchingPic = true;
-      _isPicLoading = true;
-      _picFetchedSuccessfully = false;
-    });
-
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        setState(() {
-          _picFetchedSuccessfully = true;
-          _isPicLoading = false;
-        });
-      } else {
-        setState(() {
-          _picFetchedSuccessfully = false;
-          _isPicLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _picFetchedSuccessfully = false;
-        _isPicLoading = false;
-      });
-    } finally {
-      setState(() {
-        _isFetchingPic = false;
-      });
+  void _showImagePreview() {
+    final url = _picUrlController.text;
+    if (url.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Image Preview'),
+          content: Image.network(
+            url,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(child: CircularProgressIndicator());
+            },
+            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
-  void _handleSubmit() {
-    if (_formKey.currentState!.validate()) {
-      var editedBlog = Blog(
-        id: widget.blog?.id ?? 0,
-        title: _titleController.text,
-        content: _contentController.text,
-        createdAt: widget.blog?.createdAt ?? DateTime.now(),
-        isFavorite: widget.blog?.isFavorite ?? false,
-        picUrl: _picUrlController.text.isEmpty ? null : _picUrlController.text,
-      );
+  Future<void> _saveBlog() async {
+    FocusScope.of(context).unfocus();
 
-      widget.onSave(newBlog: editedBlog, oldBlog: widget.blog);
-      Navigator.pop(context);
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Assume you have a method to save the blog; replace with your actual implementation
+      bool success = true; // Replace with actual save method
+
+      if (success) {
+        Navigator.of(context).pop(true); // Pass true if save is successful
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'Saving blog failed. Please try again.',
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+          ),
+        ));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textColorSecondary = colorScheme.secondary;
+    final textColorPrimary = Theme.of(context).primaryColor;
+
     return BlogScaffoldWidget(
-      showBackButton: true,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // Important: Allows Column to take only as much vertical space as needed
-              children: <Widget>[
-                TextFormField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter title.';
-                    }
-                    return null;
-                  },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            child: Center(
+              child: Card(
+                elevation: 0,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  side: BorderSide(color: colorScheme.onSurface, width: 1),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _contentController,
-                  decoration: InputDecoration(
-                    labelText: 'Content',
-                    border: OutlineInputBorder(),
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 20),
+                      Text(
+                        'Create/Edit Blog',
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          fontSize: 40.0,
+                          color: textColorSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 25),
+                      Text(
+                        'Fill out the form below to create or edit a blog post.',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: textColorSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _titleController,
+                              style: TextStyle(color: textColorSecondary),
+                              decoration: InputDecoration(
+                                labelText: 'Title',
+                                suffixText: '*',
+                                labelStyle: TextStyle(color: textColorSecondary),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: textColorSecondary),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: textColorSecondary),
+                                ),
+                                errorStyle: TextStyle(color: textColorPrimary),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Title cannot be empty.';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: _contentController,
+                              maxLines: null, // Unlimited lines
+                              decoration: InputDecoration(
+                                labelText: 'Content',
+                                suffixText: '*',
+                                labelStyle: TextStyle(color: textColorSecondary),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: textColorSecondary),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: textColorSecondary),
+                                ),
+                                errorStyle: TextStyle(color: textColorPrimary),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Content cannot be empty.';
+                                }
+                                if (value.length > 10) {
+                                  return 'Content cannot exceed 10 characters.';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: _picUrlController,
+                              decoration: InputDecoration(
+                                labelText: 'Image URL',
+                                labelStyle: TextStyle(color: textColorSecondary),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: textColorSecondary),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: textColorSecondary),
+                                ),
+                                suffixIcon: _picUrlController.text.isNotEmpty
+                                    ? IconButton(
+                                  icon: const Icon(Icons.preview),
+                                  onPressed: _showImagePreview,
+                                )
+                                    : null,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            _isLoading
+                                ? const CircularProgressIndicator()
+                                : ElevatedButton(
+                              onPressed: _saveBlog,
+                              child: const Text('Save'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 10) {
-                      return 'Please enter some content. The length should be minimum 10 characters.';
-                    }
-                    return null;
-                  },
-                  maxLines: null, // Allow multiple lines for content
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _picUrlController,
-                  decoration: InputDecoration(
-                    labelText: 'Picture URL',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (url) {
-                    setState(() {
-                      _picUrl = url;
-                      if (url.isNotEmpty) {
-                        _fetchPic(url);
-                      } else {
-                        _picFetchedSuccessfully = false;
-                        _isPicLoading = false;
-                      }
-                    });
-                  },
-                ),
-                SizedBox(height: 20),
-                if (_isFetchingPic) ...[
-                  Center(child: CircularProgressIndicator()),
-                ] else if (_picFetchedSuccessfully && _picUrl != null) ...[
-                  Image.network(
-                    _picUrl!,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.broken_image, size: 100);
-                    },
-                  ),
-                ] else ...[
-                  Icon(Icons.image, size: 100), // Placeholder
-                ],
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _handleSubmit,
-                  child: Text(widget.blog == null ? 'Save' : 'Update'),
-                ),
-              ],
+              ),
             ),
           ),
         ),

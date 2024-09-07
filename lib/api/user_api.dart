@@ -33,10 +33,37 @@ class UserApi{
           throw Exception(data['errorMsg']);
         }
       } else {
-        throw Exception('Failed to load blog. Status code: ${response.statusCode}');
+        throw Exception('Failed to login user. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Failed to load blog. Exception: $e');
+      throw Exception('Failed to login user. Exception: $e');
+    }
+  }
+
+  signup({required String email, required String password, String firstname = '', String lastname = ''}) async {
+    try {
+      final body = jsonEncode({
+        'email': email,
+        'password': password,
+      });
+
+      final response = await http.post(
+          Uri.http(_baseUrl, "/user"),
+          headers: _headers, body: body
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body)['data'];
+        var isSuccess = jsonDecode(response.body)['isSuccess'];
+        if (isSuccess) {
+          return User.fromJson(data);
+        } else {
+          throw Exception(data['errorMsg']);
+        }
+      } else {
+        throw Exception('Failed to create user. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to create user. Exception: $e');
     }
   }
 }

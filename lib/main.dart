@@ -124,7 +124,7 @@ final ThemeData blogThemeDark = ThemeData(
     displayLarge: TextStyle(fontSize: 36.0, fontWeight: FontWeight.bold, color: Colors.white),
     displayMedium: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w200, color:  Color(0xFFD12B41)),
     displaySmall: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w200, color: Color(0xFFD12B41)),
-    headlineLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.white),
+    headlineLarge: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w600, color: Colors.white),
     headlineMedium: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, color: Colors.white),
     headlineSmall: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.white),
     bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal, color: Colors.white),
@@ -292,19 +292,6 @@ class _MyBlogListPageState extends State<MyBlogListPage>
     return BlogScaffoldWidget(
       tabController: _tabController,
       onProfilePressed: _openProfilePage,
-      onAddBlogPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BlogFormView(
-              onSave: ({required Blog newBlog, Blog? oldBlog}) {
-                Provider.of<BlogModel>(context, listen: false).addBlog(newBlog);
-                _tabController.animateTo(0);
-              },
-            ),
-          ),
-        );
-      },
       onSearchPressed: _openSearchForm,
       body: Consumer<BlogModel>(
         builder: (context, blogModel, child) {
@@ -312,14 +299,15 @@ class _MyBlogListPageState extends State<MyBlogListPage>
             controller: _tabController,
             children: [
               const BlogListView(),
-              Center(
+              const BlogFormView(),
+              /*Center(
                 child: BlogFormView(
                   onSave: ({required Blog newBlog, Blog? oldBlog}) {
                     blogModel.addBlog(newBlog);
                     _tabController.animateTo(0);
                   },
                 ),
-              ),
+              ),*/
               const BlogListView(showUserBlogsOnly: true),
             ],
           );
