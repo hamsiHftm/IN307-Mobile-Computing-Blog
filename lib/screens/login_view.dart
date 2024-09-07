@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart';
 import 'package:provider/provider.dart';
 import '../provider/user_provider.dart';
 
@@ -38,10 +39,10 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+    return BlogScaffoldWidget(
+      showBackButton: true,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(45.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -49,12 +50,13 @@ class _LoginViewState extends State<LoginView> {
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
             ),
+            const SizedBox(height: 40),
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 60),
             _isLoading
                 ? CircularProgressIndicator()
                 : ElevatedButton(

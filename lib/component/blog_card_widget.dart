@@ -43,7 +43,7 @@ class BlogCardWidget extends StatelessWidget {
                         color: Theme.of(context).colorScheme.surface,
                         child: Center(
                           child: Icon(
-                            Icons.image,
+                            Icons.broken_image,
                             color: Theme.of(context).colorScheme.onPrimary,
                             size: 40,
                           ),

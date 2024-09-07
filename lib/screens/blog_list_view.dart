@@ -26,14 +26,16 @@ class _BlogListViewState extends State<BlogListView> {
     });
   }
 
-  Future<void> _fetchBlogs({bool refresh = false}) async {
+  Future<void> _fetchBlogs({bool refresh = false, bool nextPage = false, customOffset = 0}) async {
     setState(() {
       _errorMessage = null; // Clear any previous error message
     });
 
     try {
       await Provider.of<BlogModel>(context, listen: false).fetchBlogs(
-        refresh: refresh, // If true, reset the blogs list
+        refresh: refresh,
+        offset: customOffset,
+        nextPage: nextPage
       );
     } catch (e) {
       setState(() {
@@ -46,8 +48,11 @@ class _BlogListViewState extends State<BlogListView> {
     await _fetchBlogs(refresh: true); // Refresh blog list
   }
 
+  Future<void> _nextPage(currentOffset) async {
+    await _fetchBlogs(nextPage: true, refresh: true, customOffset: currentOffset);
+  }
+
   void _clearFilter() {
-    // Clear the search term and refresh the blog list
     _fetchBlogs(refresh: true);
   }
 
@@ -64,11 +69,9 @@ class _BlogListViewState extends State<BlogListView> {
             );
           }
 
-          // Determine if the clear filter button should be shown
           final showClearFilterButton = blogModel.searchTerm.isNotEmpty;
-
-          // Determine which content to display
           Widget content;
+
           if (blogModel.isFetching && blogModel.blogs.isEmpty) {
             content = Center(child: LoadingWidget());
           } else if (blogModel.blogs.isEmpty) {
@@ -86,31 +89,52 @@ class _BlogListViewState extends State<BlogListView> {
               ),
             );
           } else {
-            content = NotificationListener<ScrollNotification>(
-              onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-                  _fetchBlogs(); // Load more blogs when scrolling to the bottom
-                  return true;
-                }
-                return false;
-              },
-              child: BlogList(
-                blogs: blogModel.blogs,
-                blogModel: blogModel,
-              ),
+            content = BlogList(
+              blogs: blogModel.blogs,
+              blogModel: blogModel,
             );
           }
 
-          // Build the final layout
           return Column(
             children: [
-              if (showClearFilterButton) // Show the button only if the search term is not empty
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: _clearFilter,
-                    child: const Text("Clear Filter"),
-                  ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // Center the row content
+                      children: [
+                        // Left Icon Button (Decrement offset)
+                        IconButton(
+                          icon: const Icon(Icons.arrow_left), // Use left arrow icon
+                          onPressed: blogModel.offset == 0
+                              ? null // Disable button if offset is 0
+                              : () {
+                            blogModel.setOffset(blogModel.offset - 1); // Decrement offset
+                            _nextPage(blogModel.offset);// Fetch blogs with updated offset
+                          },
+                        ),
+
+                        // Display the current offset value (as page number)
+                        Text(blogModel.getCurrentPage()), // Display offset + 1 as a 1-based page number
+
+                        // Right Icon Button (Increment offset)
+                        IconButton(
+                          icon: const Icon(Icons.arrow_right), // Use right arrow icon
+                          onPressed: blogModel.getNumberOfPages() ==  (blogModel.offset + 1)
+                              ? null // Disable button if offset is 0
+                              : () {
+                            blogModel.setOffset(blogModel.offset + 1); // Increment offset
+                            _nextPage(blogModel.offset); // Fetch blogs with updated offset
+                          },
+                        ),
+
+                        if (showClearFilterButton)
+                        // Clear Filter Button
+                        ElevatedButton(
+                          onPressed: _clearFilter, // Clear the search filter
+                          child: const Text("Clear Filter"),
+                        ),
+                      ],
+                    )
                 ),
               Expanded(child: content),
             ],

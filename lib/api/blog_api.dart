@@ -13,7 +13,7 @@ class BlogApi {
     'Accept': '*/*'
   };
 
-  Future<List<Blog>> getBlogs({
+  Future<BlogResponse> getBlogs({
     int limit = 10,
     int offset = 0,
     bool favoritesOnly = false,
@@ -42,8 +42,15 @@ class BlogApi {
         var isSuccess = blogsJson['isSuccess'];
         if (isSuccess) {
           final List<dynamic> blogsListJson = blogsJson['data']['blogs'];
+
+          // Retrieve the totalBlogs from the response
+          int totalBlogs = blogsJson['data']['totalBlogs'];
+
+          // Convert each blog JSON to a Blog object
           var blogs = blogsListJson.map((json) => Blog.fromJson(json)).toList();
-          return blogs;
+
+          // Return the blogs list and the totalBlogs count
+          return BlogResponse(blogs: blogs, totalBlogs: totalBlogs);
         } else {
           throw Exception('Failed to load blogs. isSuccess=False');
         }
@@ -95,3 +102,11 @@ class BlogApi {
   }
 
 }
+
+class BlogResponse {
+  final List<Blog> blogs;
+  final int totalBlogs;
+
+  BlogResponse({required this.blogs, required this.totalBlogs});
+}
+

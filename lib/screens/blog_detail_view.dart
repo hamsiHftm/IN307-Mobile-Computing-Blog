@@ -95,7 +95,6 @@ class _BlogDetailViewState extends State<BlogDetailView> {
   Widget build(BuildContext context) {
     return BlogScaffoldWidget(
       showBackButton: true,
-
       body: FutureBuilder<Blog?>(
         future: _futureBlog,
         builder: (context, snapshot) {
@@ -110,151 +109,178 @@ class _BlogDetailViewState extends State<BlogDetailView> {
           } else {
             final blog = snapshot.data!;
             return Container(
-              color: Theme.of(context).colorScheme.tertiary,
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // User Profile
-                      Row(
+                color: Theme.of(context).colorScheme.tertiary,
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ProfileIconWidget(
-                            picUrl: blog.user?.picUrl,
-                            iconSize: 50.0,
-                            containerSize: 40.0,
-                          ),
-                          const SizedBox(width: 8.0),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          // User Profile
+                          Row(
                             children: [
-                              Text(blog.user!.getDisplayName(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineLarge),
-                              Text(timeago.format(blog.createdAt))
+                              ProfileIconWidget(
+                                picUrl: blog.user?.picUrl,
+                                iconSize: 50.0,
+                                containerSize: 40.0,
+                              ),
+                              const SizedBox(width: 8.0),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(blog.user!.getDisplayName(),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge),
+                                  Text(timeago.format(blog.createdAt))
+                                ],
+                              )
                             ],
+                          ),
+                          const SizedBox(height: 16.0),
+                          // Blog Heading
+                          Text(blog.title,
+                              style: Theme.of(context).textTheme.displayLarge),
+                          const SizedBox(height: 16.0),
+                          // Blog Image
+                          blog.picUrl != null && blog.picUrl!.isNotEmpty
+                              ? Image.network(
+                                  blog.picUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    // Handles the case where the image cannot be retrieved
+                                    return Container(
+                                      height: 250,
+                                      // Ensure height is consistent even if the image fails
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          // Show broken image icon when there's an error
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          size: 250,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(
+                                  height: 250,
+                                  color: Theme.of(context).colorScheme.surface,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.image,
+                                      // Default image icon when no URL is provided
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      size: 150,
+                                    ),
+                                  ),
+                                ),
+                          const SizedBox(height: 16.0),
+                          // Blog Tags
+                          Row(
+                            children: [
+                              ElevatedButton.icon(
+                                onPressed: () {},
+                                icon: Icon(
+                                  _isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color:
+                                      _isFavorite ? Colors.red : Colors.white,
+                                ),
+                                label: Text('${blog.numberOfLikes} likes'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                ),
+                              ),
+                              const SizedBox(width: 8.0),
+                              ElevatedButton.icon(
+                                onPressed: () {},
+                                icon: const Icon(Icons.comment),
+                                label: Text(
+                                    '${blog.comments?.length ?? 0} comments'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.surface,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16.0),
+                          // Blog Content
+                          Text(
+                            blog.content,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 25.0),
+                          Text(
+                            "Comments",
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          // Comment List
+                          blog.comments != null && blog.comments!.isNotEmpty
+                              ? CommentListWidget(comments: blog.comments!)
+                              : Center(
+                                  child: Column(
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/no_comment.png',
+                                        width: 250,
+                                        height: 250,
+                                      ),
+                                      const Text('Be the first to comment')
+                                    ],
+                                  ),
+                                ),
+                          const SizedBox(
+                            height: 70.0,
                           )
                         ],
                       ),
-                      const SizedBox(height: 16.0),
-                      // Blog Heading
-                      Text(blog.title,
-                          style: Theme.of(context).textTheme.displayLarge),
-                      const SizedBox(height: 16.0),
-                      // Blog Image
-                      blog.picUrl != null && blog.picUrl!.isNotEmpty
-                          ? Image.network(
-                              blog.picUrl!,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              height: 250,
-                              color: Theme.of(context).colorScheme.surface,
-                              child: Center(
-                                child: Icon(
-                                  Icons.image,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  size: 150,
-                                ),
-                              ),
-                            ),
-                      const SizedBox(height: 16.0),
-                      // Blog Tags
-                      Row(
+                    ),
+                    // Floating Action Buttons
+                    Positioned(
+                      right: 16.0,
+                      bottom: 16.0,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: Icon(
+                          FloatingActionButton(
+                            onPressed: _toggleFavorite,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            heroTag: 'favorite_button',
+                            child: Icon(
                               _isFavorite
                                   ? Icons.favorite
                                   : Icons.favorite_border,
-                              color: _isFavorite ? Colors.red : Colors.white,
-                            ),
-                            label: Text('${blog.numberOfLikes} likes'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.surface,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                           const SizedBox(width: 8.0),
-                          ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(Icons.comment),
-                            label: Text('${blog.comments?.length ?? 0} comments'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.surface,
+                          FloatingActionButton(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            onPressed: _openCommentDialog,
+                            heroTag: 'comment_button',
+                            child: Icon(
+                              Icons.comment_outlined,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16.0),
-                      // Blog Content
-                      Text(
-                        blog.content,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      const SizedBox(height: 25.0),
-                      Text(
-                        "Comments",
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      // Comment List
-                      blog.comments != null && blog.comments!.isNotEmpty
-                          ? CommentListWidget(comments: blog.comments!)
-                          : Center(
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/no_comment.png',
-                                    width: 250,
-                                    height: 250,
-                                  ),
-                                  const Text('Be the first to comment')
-                                ],
-                              ),
-                            ),
-                      const SizedBox(height: 70.0,)
-                    ],
-                  ),
-                ),
-                // Floating Action Buttons
-                Positioned(
-                  right: 16.0,
-                  bottom: 16.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FloatingActionButton(
-                        onPressed: _toggleFavorite,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        heroTag:
-                            'favorite_button',
-                        child: Icon(
-                          _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                      const SizedBox(width: 8.0),
-                      FloatingActionButton(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        onPressed: _openCommentDialog,
-                        heroTag:
-                            'comment_button',
-                        child: Icon(
-                            Icons.comment_outlined,
-                            color: Theme.of(context).colorScheme.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ));
+                    )
+                  ],
+                ));
           }
         },
       ),

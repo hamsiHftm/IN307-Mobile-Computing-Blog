@@ -5,6 +5,7 @@ import 'package:in307_mobile_computing_blog/model/blog.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_form_view.dart';
 import 'package:in307_mobile_computing_blog/screens/blog_list_view.dart';
+import 'package:in307_mobile_computing_blog/screens/login_view.dart';
 import 'package:in307_mobile_computing_blog/screens/profile_view.dart';
 import 'package:provider/provider.dart';
 
@@ -204,7 +205,7 @@ void main() {
         title: 'Blog-IN307',
         theme: blogThemeLight,
         darkTheme: blogThemeDark,
-        themeMode: ThemeMode.system,
+        themeMode: ThemeMode.dark,
         home: const DefaultTabController(
           length: 3,
           child: MyBlogListPage(),
@@ -234,14 +235,17 @@ class _MyBlogListPageState extends State<MyBlogListPage>
   void _openProfilePage() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ProfileView(
-          user: User(
-            id: 1,
-            email: 'test@test.ch',
-            firstname: 'test',
-            lastname: 'jjsj',
-          ),
-          totalBlogs: 30,
+        // builder: (context) => ProfileView(
+        //   user: User(
+        //     id: 1,
+        //     email: 'test@test.ch',
+        //     firstname: 'test',
+        //     lastname: 'jjsj',
+        //   ),
+        //   totalBlogs: 30,
+        // ),
+        builder: (context) => LoginView(
+
         ),
       ),
     );

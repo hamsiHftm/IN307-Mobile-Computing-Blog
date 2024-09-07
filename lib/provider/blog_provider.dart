@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import '../api/blog_api.dart';
 import '../model/blog.dart';
+import 'dart:math';
 
 class BlogModel extends ChangeNotifier {
   List<Blog> _blogs = [];
   int _offset = 0;
   final int _limit = 10;
   bool _isFetching = false;
-  bool _hasMoreBlogs = true;
   String _searchTerm = '';
+  int _totalBlogs = 0;
 
   List<Blog> get blogs => _blogs;
-  bool get hasMoreBlogs => _hasMoreBlogs;
   bool get isFetching => _isFetching;
   String get searchTerm => _searchTerm;
+  int get offset => _offset;
+  int get totalBlogs => _totalBlogs;
 
   BlogModel() {
     // fetchBlogs(); // Fetch blogs when the model is created
@@ -21,25 +23,32 @@ class BlogModel extends ChangeNotifier {
 
   Future<void> fetchBlogs({
     bool refresh = false,
+    bool nextPage = false,
     String searchTitle = '',
     String? userId,
     String orderBy = 'createdAt',
     bool asc = true,
+    offset
   }) async {
+    if (_isFetching) return; // Prevent duplicate fetching
+
+    // setting current search value
     _searchTerm = searchTitle;
+
+    // If page is reloading, it should set the following
     if (refresh) {
       _blogs = []; // Clear the blog list before loading new data
-      _offset = 0;
-      _hasMoreBlogs = true;
+      if (!nextPage) {
+        _offset = 0;
+      }
       notifyListeners(); // Notify listeners to update UI immediately
     }
 
-    if (_isFetching || !_hasMoreBlogs) return; // Prevent duplicate fetching
     _isFetching = true;
     notifyListeners(); // Notify UI that fetching has started
 
     try {
-      final List<Blog> newBlogs = await BlogApi.instance.getBlogs(
+      final BlogResponse blogResponse = await BlogApi.instance.getBlogs(
         limit: _limit,
         offset: _offset,
         searchTitle: searchTitle,
@@ -48,13 +57,9 @@ class BlogModel extends ChangeNotifier {
         asc: asc,
       );
 
-      _blogs.addAll(newBlogs);
+      _totalBlogs = blogResponse.totalBlogs;
+      _blogs.addAll( blogResponse.blogs);
 
-      if (newBlogs.length < _limit) {
-        _hasMoreBlogs = false; // No more blogs available
-      } else {
-        _offset += newBlogs.length; // Update offset for pagination
-      }
     } catch (e) {
       notifyListeners();
       // Handle error: throw exception or set an error message to show in the UI
@@ -63,6 +68,19 @@ class BlogModel extends ChangeNotifier {
       _isFetching = false; // Reset fetching state after the process is done
       notifyListeners(); // Notify listeners that fetching is complete
     }
+  }
+
+  void setOffset(int offset) {
+    _offset = offset;
+  }
+
+  int getNumberOfPages() {
+    return (_totalBlogs / _limit).ceil();
+  }
+
+  String getCurrentPage() {
+    int currentPage = _offset + 1;
+    return '$currentPage';
   }
 
   int getIndexOfBlog(Blog blog) {
