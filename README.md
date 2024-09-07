@@ -1,103 +1,138 @@
-# IN307 - Mobile Computing / Blog App
+# Blog-IN307
 
-The frontend for the Blog Project is an Android application developed using Flutter and Dart. This application provides a mobile interface for users to interact with the blog platform, allowing them to view, create, and manage blog posts, comments, likes, and ratings.
+## Overview
+
+This is a Flutter-based blog application that integrates with a local backend. It provides features such as viewing blogs, adding new posts, and managing user profiles.
+
+## Features
+
+- View and manage blogs
+- Add new blog posts
+- User authentication and profile management
+- Search functionality
 
 ## Project Structure
 
-The Flutter project follows a well-organized structure to ensure maintainability and clarity. Here is a breakdown of the key directories and files:
+The project is organized into several directories and files, each serving a specific purpose:
 
 ```
 .
 ├── api
-│   └── blog_api.dart              // API service definitions for interacting with the backend
+│   ├── blog_api.dart              # Contains API endpoints related to blogs
+│   └── user_api.dart              # Contains API endpoints related to users
 ├── component
-│   ├── blog_card.dart             // UI component for displaying a single blog post
-│   └── blog_list.dart             // UI component for displaying a list of blog posts
-├── main.dart                      // Entry point of the application
+│   ├── blog_app_bar_widget.dart   # Widget for the blog app bar
+│   ├── blog_card_widget.dart      # Widget for displaying a blog card
+│   ├── blog_error_widget.dart     # Widget for displaying error messages
+│   ├── blog_list.dart             # Widget for listing blogs
+│   ├── blog_scaffold_widget.dart  # Scaffold widget for blog-related screens
+│   ├── blog_search_dialog_widget.dart # Dialog widget for searching blogs
+│   ├── comment_card_widget.dart   # Widget for displaying a comment card
+│   ├── comment_list_widget.dart   # Widget for listing comments
+│   ├── loading_widget.dart        # Widget for showing loading indicators
+│   └── profile_icon_widget.dart   # Widget for displaying user profile icon
+├── main.dart                      # Entry point of the Flutter application
 ├── model
-│   ├── blog.dart                  // Data model for blog posts
-│   └── user.dart                  // Data model for users
+│   ├── blog.dart                  # Blog model class
+│   ├── comment.dart               # Comment model class
+│   └── user.dart                  # User model class
 ├── provider
-│   └── blog_provider.dart         // Provider for managing blog-related state and business logic
+│   ├── blog_provider.dart         # Provider for managing blog data
+│   └── user_provider.dart         # Provider for managing user data
 ├── screens
-│   ├── blog_detail_view.dart      // Screen for viewing the details of a single blog post
-│   └── blog_form_view.dart        // Screen for creating or editing a blog post
-├── services
-│   └── blog_repository.dart       // Repository for fetching and managing blog data
+│   ├── blog_detail_view.dart      # Screen for viewing blog details
+│   ├── blog_form_view.dart        # Screen for adding/editing a blog post
+│   ├── blog_info_view.dart        # Screen for blog information
+│   ├── blog_list_view.dart        # Screen for listing blogs
+│   ├── login_view.dart            # Screen for user login
+│   └── profile_view.dart          # Screen for user profile
 └── utils
-    └── app_logger.dart            // Utility class for logging messages throughout the application
+    └── app_logger.dart            # Utility for logging application events
 ```
 
-### Directory Descriptions
+### PROJECT STRUCTURE
 
-- **api**: Contains files responsible for API interactions. `blog_api.dart` defines the endpoints and methods for communication with the backend server.
+- **`api`**: This folder contains files that handle communication with the backend server. It includes the code for making API requests and processing responses related to blogs and user data.
 
-- **component**: Contains reusable UI components. `blog_card.dart` and `blog_list.dart` are used for displaying blog posts in various formats.
+- **`component`**: This folder holds reusable widgets and UI elements used throughout the app. These components are designed to be used in multiple places to maintain a consistent look and feel.
 
-- **main.dart**: The main entry point of the application. This file initializes the app and sets up global configurations.
+- **`main.dart`**: The main entry point of the application. It sets up the app's configuration, including the theme, providers, and initial routes.
 
-- **model**: Contains data models that represent the core entities of the application. `blog.dart` and `user.dart` define the structure of blog posts and user profiles, respectively.
+- **`model`**: This folder contains classes that define the data structures used in the app, such as blogs, comments, and user information.
 
-- **provider**: Manages the state of the application. `blog_provider.dart` handles the state and business logic related to blog posts.
+- **`provider`**: This folder includes classes that manage the app's state and business logic. Providers connect the user interface with the data and handle operations like fetching and updating data.
 
-- **screens**: Contains the various screens or views of the application. `blog_detail_view.dart` and `blog_form_view.dart` are used to display detailed views of a blog post and forms for creating or editing posts.
+- **`screens`**: Contains the main screens or pages of the app. Each screen represents a different part of the user interface, such as the blog list, blog details, or user profile.
 
-- **services**: Manages data fetching and business logic. `blog_repository.dart` interacts with `blog_api.dart` to fetch and manipulate data.
+- **`utils`**: Holds utility functions or classes that provide general support across the app, like logging and debugging tools.
 
-- **utils**: Contains utility classes and functions used throughout the application. `app_logger.dart` is a utility class for centralized logging.
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+1. **Flutter SDK**: Ensure that you have the Flutter SDK installed on your system. Follow the [Flutter installation guide](https://flutter.dev/docs/get-started/install) if you haven't set it up yet.
+2. **Dart SDK**: The Dart SDK is included with Flutter, so installing Flutter will also install Dart.
+3. **Local Backend**: This application connects to a local backend service. The backend repository can be found [here](https://github.com/hamsiHftm/IN306-Blog-Project.git) on the branch `in307-flutter-project`.
 
-- Ensure you have [Flutter SDK](https://flutter.dev/docs/get-started/install) installed.
-- Ensure you have [Android Studio](https://developer.android.com/studio) or another IDE configured for Flutter development.
+## Setup and Installation
 
-### Setup
+### 1. Clone the Backend Repository
 
-1. **Clone the Repository**:
-    ```sh
-    git clone https://github.com/hamsiHftm/IN307-Mobile-Computing-Blog.git
-    cd IN307-Mobile-Computing-Blog
-    ```
+First, clone the backend repository:
 
-2. **Install Dependencies**:
-    ```sh
+```bash
+git clone -b in307-flutter-project https://github.com/hamsiHftm/IN306-Blog-Project.git
+```
+
+### 2. Set Up the Backend
+
+Navigate to the cloned backend repository and follow the backend's setup instructions to run it locally. Typically, this involves:
+
+```bash
+cd IN306-Blog-Project
+# Follow backend setup instructions, e.g., installing dependencies and running the server
+```
+
+### 3. Configure the API Endpoints
+
+Make sure the API endpoints in the Flutter project are correctly set to connect to your local backend. Open the files `lib/api/blog_api.dart` and `lib/api/user_api.dart` and check the `_baseUrl` configuration:
+
+```dart
+// lib/api/blog_api.dart
+static const String _baseUrl = "http://10.0.2.2:8080"; // Ensure this URL is correct
+
+// lib/api/user_api.dart
+static const String _baseUrl = "http://10.0.2.2:8080"; // Ensure this URL is correct
+```
+
+### 4. Run the Flutter Application
+
+1. **Install Dependencies**: Navigate to your Flutter project directory and install dependencies:
+
+    ```bash
     flutter pub get
     ```
 
-3. **Run the Application**:
-    ```sh
+2. **Run the App**: Start the application using:
+
+    ```bash
     flutter run
     ```
 
-   The application will launch on the connected device or emulator.
+   Ensure that the emulator or connected device is running and properly configured. The application should launch and connect to the local backend.
 
-## Flavours and Environments
+## Troubleshooting
 
-TODO
+- **Local Backend Issues**: If the app cannot connect to the local backend, verify that the backend is running and accessible. Ensure that the URL `http://10.0.2.2:8080` matches the backend's URL and port.
+- **Network Configuration**: For physical devices, replace `10.0.2.2` with the IP address of your machine where the backend is running.
+- **Emulator Configuration**: `10.0.2.2` is used for Android emulators to access localhost. If using a different setup, adjust the `_baseUrl` accordingly.
 
-To support different environments (e.g., development, staging, production), we use Flutter flavours. Configure your `flutter` build flavors in `android/app/build.gradle` and use environment-specific configurations as needed.
 
-### Configuring Flavours
+## FEEDBACK AND MY FOCUS - UX
 
-1. **Define Flavours** in `build.gradle`:
-    ```gradle
-    android {
-        ...
-        flavorDimensions "env"
-        productFlavors {
-            dev {
-                dimension "env"
-                applicationIdSuffix ".dev"
-                versionNameSuffix "-dev"
-            }
-            prod {
-                dimension "env"
-            }
-        }
-    }
-    ```
+- **Time Constraints**: I had limited time and spent a lot of it working on authentication issues with the backend. Despite this, I focused on making the user experience (UX) as good as possible.
+- **Attention to Detail**: I chose to focus on UX, so I paid close attention to every detail. Here’s what I added:
+   - **Error Handling**: Created a widget to show error messages clearly.
+   - **Loading Indicators**: Added an animated loading widget to improve the experience while waiting for data.
+   - **Illustrations**: Used illustrations to show helpful messages when there are no blogs or when search results are empty.
+   - **Form Validation**: Included checks for login, signup, and blog submission forms to ensure they are filled out correctly.
 
-2. **Create Environment Files**:
-    - `lib/config/environment.dart` for environment-specific configurations.
