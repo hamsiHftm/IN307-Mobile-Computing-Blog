@@ -135,7 +135,7 @@ Throughout the development of this app, my primary focus was on enhancing user e
 
 - **Error Handling and Feedback**: Clear error handling and feedback mechanisms are integrated throughout the app. For instance, when the backend service is down, the app shows error messages with illustrations to inform users. During loading states, animations from the Lottie library are used to keep users engaged while data is being fetched.
 
-- **Validation and Guidance**: The app includes robust validation for forms. For example, when signing up or logging in, users receive immediate feedback on errors such as invalid email addresses or mismatched passwords. This helps users correct mistakes quickly. Similarly, when creating a new blog, the app ensures that the title and content are provided and that the content length exceeds ten characters before submission.
+- **Validation and Guidance**: The app includes robust validation for forms. For example, when signing up or logging in, users receive immediate feedback on errors such as invalid email addresses or mismatched passwords. This helps users correct mistakes quickly. Similarly, when creating a new blog, the app ensures that the title and content are provided and that the content length exceeds ten characters before submission. Hint text and required field indicators are used to guide users through filling out forms correctly.
 
 - **Detailed Blog Views**: Blog posts are presented with comprehensive details. For example, each blog detail view includes the blog title, content, image, number of likes, and a list of comments. If there are no comments, an image placeholder is shown. This approach offers a rich and engaging experience, making it easy for users to interact with and appreciate the content.
 
