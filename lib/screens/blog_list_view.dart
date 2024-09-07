@@ -5,11 +5,20 @@ import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../component/blog_error_widget.dart';
+import '../model/user.dart';
+import 'login_view.dart';
 
 class BlogListView extends StatefulWidget {
   final bool favoritesOnly;
+  final bool showUserBlogsOnly;
+  final User? user;
 
-  const BlogListView({Key? key, this.favoritesOnly = false}) : super(key: key);
+  const BlogListView({
+    super.key,
+    this.favoritesOnly = false,
+    this.showUserBlogsOnly = false, // Default to false
+    this.user,
+  });
 
   @override
   _BlogListViewState createState() => _BlogListViewState();
@@ -26,16 +35,25 @@ class _BlogListViewState extends State<BlogListView> {
     });
   }
 
-  Future<void> _fetchBlogs({bool refresh = false, bool nextPage = false, customOffset = 0}) async {
+  Future<void> _fetchBlogs({
+    bool refresh = false,
+    bool nextPage = false,
+    customOffset = 0,
+  }) async {
     setState(() {
       _errorMessage = null; // Clear any previous error message
     });
 
     try {
+      int? userId = (widget.showUserBlogsOnly && widget.user != null)
+          ? widget.user!.id
+          : null;
+
       await Provider.of<BlogModel>(context, listen: false).fetchBlogs(
         refresh: refresh,
         offset: customOffset,
-        nextPage: nextPage
+        nextPage: nextPage,
+        userId: userId,
       );
     } catch (e) {
       setState(() {
@@ -72,7 +90,20 @@ class _BlogListViewState extends State<BlogListView> {
           final showClearFilterButton = blogModel.searchTerm.isNotEmpty;
           Widget content;
 
-          if (blogModel.isFetching && blogModel.blogs.isEmpty) {
+          // If user-specific blogs are requested but the user is not logged in, show the login prompt
+          if (widget.showUserBlogsOnly && widget.user == null) {
+            content = Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                  );
+                },
+                child: const Text("Login to view your blogs"),
+              ),
+            );
+          } else if (blogModel.isFetching && blogModel.blogs.isEmpty) {
             content = Center(child: LoadingWidget());
           } else if (blogModel.blogs.isEmpty) {
             content = Center(
@@ -97,45 +128,48 @@ class _BlogListViewState extends State<BlogListView> {
 
           return Column(
             children: [
+              if (widget.showUserBlogsOnly && widget.user != null)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center the row content
-                      children: [
-                        // Left Icon Button (Decrement offset)
-                        IconButton(
-                          icon: const Icon(Icons.arrow_left), // Use left arrow icon
-                          onPressed: blogModel.offset == 0
-                              ? null // Disable button if offset is 0
-                              : () {
-                            blogModel.setOffset(blogModel.offset - 1); // Decrement offset
-                            _nextPage(blogModel.offset);// Fetch blogs with updated offset
-                          },
-                        ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center, // Center the row content
+                    children: [
+                      // Left Icon Button (Decrement offset)
+                      IconButton(
+                        icon: const Icon(Icons.arrow_left), // Use left arrow icon
+                        onPressed: blogModel.offset == 0
+                            ? null // Disable button if offset is 0
+                            : () {
+                          blogModel.setOffset(blogModel.offset - 1); // Decrement offset
+                          _nextPage(blogModel.offset); // Fetch blogs with updated offset
+                        },
+                      ),
 
-                        // Display the current offset value (as page number)
-                        Text(blogModel.getCurrentPage()), // Display offset + 1 as a 1-based page number
+                      // Display the current offset value (as page number)
+                      Text(blogModel.getCurrentPage()), // Display offset + 1 as a 1-based page number
 
-                        // Right Icon Button (Increment offset)
-                        IconButton(
-                          icon: const Icon(Icons.arrow_right), // Use right arrow icon
-                          onPressed: blogModel.getNumberOfPages() ==  (blogModel.offset + 1)
-                              ? null // Disable button if offset is 0
-                              : () {
-                            blogModel.setOffset(blogModel.offset + 1); // Increment offset
-                            _nextPage(blogModel.offset); // Fetch blogs with updated offset
-                          },
-                        ),
+                      // Right Icon Button (Increment offset)
+                      IconButton(
+                        icon: const Icon(Icons.arrow_right), // Use right arrow icon
+                        onPressed: blogModel.getNumberOfPages() == (blogModel.offset + 1)
+                            ? null // Disable button if offset is 0
+                            : () {
+                          blogModel.setOffset(blogModel.offset + 1); // Increment offset
+                          _nextPage(blogModel.offset); // Fetch blogs with updated offset
+                        },
+                      ),
 
-                        if (showClearFilterButton)
-                        // Clear Filter Button
+                      if (showClearFilterButton)
+                      // Clear Filter Button
                         ElevatedButton(
                           onPressed: _clearFilter, // Clear the search filter
                           child: const Text("Clear Filter"),
                         ),
-                      ],
-                    )
+                    ],
+                  ),
                 ),
+
+              // Expanded content
               Expanded(child: content),
             ],
           );

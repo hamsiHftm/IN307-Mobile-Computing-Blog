@@ -25,7 +25,7 @@ class BlogModel extends ChangeNotifier {
     bool refresh = false,
     bool nextPage = false,
     String searchTitle = '',
-    String? userId,
+    int? userId,
     String orderBy = 'createdAt',
     bool asc = true,
     offset

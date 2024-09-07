@@ -18,7 +18,7 @@ class BlogApi {
     int offset = 0,
     bool favoritesOnly = false,
     String searchTitle = '',
-    String? userId, // Optional userId parameter
+    int? userId, // Optional userId parameter
     String orderBy = 'createdAt',
     bool asc = true,
   }) async {
@@ -28,7 +28,7 @@ class BlogApi {
       'asc': '$asc',
       'orderBy': orderBy,
       'searchTitle': Uri.encodeComponent(searchTitle),
-      if (userId != null) 'userId': userId, // Add userId if it's not null
+      if (userId != null) 'userId': '$userId', // Add userId if it's not null
     };
 
     try {

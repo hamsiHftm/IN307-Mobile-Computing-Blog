@@ -268,8 +268,16 @@ class _MyBlogListPageState extends State<MyBlogListPage>
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
+    User currentUser = User(
+        id: 1,
+        email: "user@example.com",
+        firstname: "John",
+        lastname: "Doe",
+        picUrl: "https://example.com/johndoe.png"
+    );
     return BlogScaffoldWidget(
       tabController: _tabController,
       onProfilePressed: _openProfilePage,
@@ -301,7 +309,7 @@ class _MyBlogListPageState extends State<MyBlogListPage>
                   },
                 ),
               ),
-              const BlogListView(),
+              const BlogListView(showUserBlogsOnly: true),
             ],
           );
         },
