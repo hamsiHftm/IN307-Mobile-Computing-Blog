@@ -1,12 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/component/blog_list.dart';
 import 'package:in307_mobile_computing_blog/component/loading_widget.dart';
 import 'package:in307_mobile_computing_blog/provider/blog_provider.dart';
 import 'package:provider/provider.dart';
-
 import '../component/blog_error_widget.dart';
 import '../model/user.dart';
 import 'login_view.dart';
+import '../provider/user_provider.dart';
 
 class BlogListView extends StatefulWidget {
   final bool favoritesOnly;
@@ -16,7 +18,7 @@ class BlogListView extends StatefulWidget {
   const BlogListView({
     super.key,
     this.favoritesOnly = false,
-    this.showUserBlogsOnly = false, // Default to false
+    this.showUserBlogsOnly = false,
     this.user,
   });
 
@@ -26,33 +28,38 @@ class BlogListView extends StatefulWidget {
 
 class _BlogListViewState extends State<BlogListView> {
   String? _errorMessage;
+  int _currentPage = 1; // Track the current page
+  final int _limit = 10; // Limit for blogs per page
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchBlogs();
+      _fetchBlogs(); // Fetch the first page of blogs
+      setState(() {
+        _currentPage = 1;
+      });
     });
   }
 
   Future<void> _fetchBlogs({
     bool refresh = false,
-    bool nextPage = false,
-    customOffset = 0,
   }) async {
     setState(() {
-      _errorMessage = null; // Clear any previous error message
+      _errorMessage = null;
     });
 
     try {
-      int? userId = (widget.showUserBlogsOnly && widget.user != null)
-          ? widget.user!.id
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      int? userId = (widget.showUserBlogsOnly && userProvider.isLoggedIn)
+          ? userProvider.user?.id
           : null;
+
 
       await Provider.of<BlogModel>(context, listen: false).fetchBlogs(
         refresh: refresh,
-        offset: customOffset,
-        nextPage: nextPage,
+        offset: _currentPage - 1,
+        limit: _limit, // Pass the limit to fetch a fixed number of blogs per page
         userId: userId,
       );
     } catch (e) {
@@ -63,19 +70,38 @@ class _BlogListViewState extends State<BlogListView> {
   }
 
   Future<void> _refresh() async {
-    await _fetchBlogs(refresh: true); // Refresh blog list
+    _currentPage = 1; // Reset to the first page on refresh
+    await _fetchBlogs(refresh: true);
   }
 
-  Future<void> _nextPage(currentOffset) async {
-    await _fetchBlogs(nextPage: true, refresh: true, customOffset: currentOffset);
+  Future<void> _nextPage() async {
+    // Increase currentPage if there are more blogs to fetch
+    if (_currentPage * _limit < Provider.of<BlogModel>(context, listen: false).totalBlogs) {
+      setState(() {
+        _currentPage += 1;
+      });
+      await _fetchBlogs();
+    }
+  }
+
+  Future<void> _prevPage() async {
+    // Decrease currentPage if not on the first page
+    if (_currentPage > 1) {
+      setState(() {
+        _currentPage -= 1;
+      });
+      await _fetchBlogs();
+    }
   }
 
   void _clearFilter() {
-    _fetchBlogs(refresh: true);
+    _fetchBlogs(refresh: true); // Clear any filters applied to the blog search
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
     return RefreshIndicator(
       onRefresh: _refresh,
       child: Consumer<BlogModel>(
@@ -83,22 +109,29 @@ class _BlogListViewState extends State<BlogListView> {
           if (_errorMessage != null) {
             return BlogErrorWidget(
               message: _errorMessage!,
-              onRetry: _refresh, // Optionally retry on error
+              onRetry: _refresh,
             );
           }
 
           final showClearFilterButton = blogModel.searchTerm.isNotEmpty;
           Widget content;
 
-          // If user-specific blogs are requested but the user is not logged in, show the login prompt
-          if (widget.showUserBlogsOnly && widget.user == null) {
+          if (widget.showUserBlogsOnly && !userProvider.isLoggedIn) {
             content = Center(
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  // Push LoginView and listen for result
+                  final loginSuccess = await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginView()),
+                    MaterialPageRoute(
+                      builder: (context) => LoginView(),
+                    ),
                   );
+
+                  // Refresh blog list if login is successful
+                  if (loginSuccess == true) {
+                    _fetchBlogs(refresh: true);
+                  }
                 },
                 child: const Text("Login to view your blogs"),
               ),
@@ -125,51 +158,35 @@ class _BlogListViewState extends State<BlogListView> {
               blogModel: blogModel,
             );
           }
-
           return Column(
             children: [
-              if (widget.showUserBlogsOnly && widget.user != null)
+              if (!(widget.showUserBlogsOnly && !userProvider.isLoggedIn))
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center, // Center the row content
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Left Icon Button (Decrement offset)
                       IconButton(
-                        icon: const Icon(Icons.arrow_left), // Use left arrow icon
-                        onPressed: blogModel.offset == 0
-                            ? null // Disable button if offset is 0
-                            : () {
-                          blogModel.setOffset(blogModel.offset - 1); // Decrement offset
-                          _nextPage(blogModel.offset); // Fetch blogs with updated offset
-                        },
+                        icon: const Icon(Icons.arrow_left),
+                        onPressed: _currentPage == 1
+                            ? null
+                            : _prevPage, // Call _prevPage if there are previous pages
                       ),
-
-                      // Display the current offset value (as page number)
-                      Text(blogModel.getCurrentPage()), // Display offset + 1 as a 1-based page number
-
-                      // Right Icon Button (Increment offset)
+                      Text('${_currentPage} / ${max(1, (blogModel.totalBlogs / _limit).ceil())}'),
                       IconButton(
-                        icon: const Icon(Icons.arrow_right), // Use right arrow icon
-                        onPressed: blogModel.getNumberOfPages() == (blogModel.offset + 1)
-                            ? null // Disable button if offset is 0
-                            : () {
-                          blogModel.setOffset(blogModel.offset + 1); // Increment offset
-                          _nextPage(blogModel.offset); // Fetch blogs with updated offset
-                        },
+                        icon: const Icon(Icons.arrow_right),
+                        onPressed: (_currentPage * _limit >= blogModel.totalBlogs)
+                            ? null
+                            : _nextPage, // Call _nextPage if there are more pages
                       ),
-
                       if (showClearFilterButton)
-                      // Clear Filter Button
                         ElevatedButton(
-                          onPressed: _clearFilter, // Clear the search filter
+                          onPressed: _clearFilter,
                           child: const Text("Clear Filter"),
                         ),
                     ],
                   ),
                 ),
-
-              // Expanded content
               Expanded(child: content),
             ],
           );

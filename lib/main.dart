@@ -253,9 +253,7 @@ class _MyBlogListPageState extends State<MyBlogListPage>
         //   ),
         //   totalBlogs: 30,
         // ),
-        builder: (context) => LoginView(
-
-        ),
+        builder: (context) => LoginView()
       ),
     );
   }
@@ -265,10 +263,14 @@ class _MyBlogListPageState extends State<MyBlogListPage>
       context: context,
       builder: (context) => BlogSearchDialog(
         onSearch: (searchTerm) {
+
           // When a search term is provided, update the blog list view
+          final userProvider = Provider.of<UserProvider>(context, listen: false);
           Provider.of<BlogModel>(context, listen: false).fetchBlogs(
             refresh: true, // Refresh the list when searching
             searchTitle: searchTerm, // Pass the search term to filter the blogs
+            userId: userProvider.user?.id,
+            offset: 0
           );
           print('Searching for: $searchTerm'); // Debug print to show the search term
         },

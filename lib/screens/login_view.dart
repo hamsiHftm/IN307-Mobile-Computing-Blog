@@ -27,16 +27,15 @@ class _LoginViewState extends State<LoginView> {
     );
 
     if (success) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true); // Pass true if login is successful
     } else {
       setState(() {
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
-            'Login failed. Please try again.',
+          'Login failed. Please try again.',
           style: TextStyle(color: Colors.red),
-
         ),
       ));
     }

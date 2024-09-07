@@ -5,8 +5,6 @@ import 'dart:math';
 
 class BlogModel extends ChangeNotifier {
   List<Blog> _blogs = [];
-  int _offset = 0;
-  final int _limit = 10;
   bool _isFetching = false;
   String _searchTerm = '';
   int _totalBlogs = 0;
@@ -14,7 +12,6 @@ class BlogModel extends ChangeNotifier {
   List<Blog> get blogs => _blogs;
   bool get isFetching => _isFetching;
   String get searchTerm => _searchTerm;
-  int get offset => _offset;
   int get totalBlogs => _totalBlogs;
 
   BlogModel() {
@@ -28,7 +25,8 @@ class BlogModel extends ChangeNotifier {
     int? userId,
     String orderBy = 'createdAt',
     bool asc = true,
-    offset
+    offset = 0,
+    limit = 10
   }) async {
     if (_isFetching) return; // Prevent duplicate fetching
 
@@ -38,9 +36,6 @@ class BlogModel extends ChangeNotifier {
     // If page is reloading, it should set the following
     if (refresh) {
       _blogs = []; // Clear the blog list before loading new data
-      if (!nextPage) {
-        _offset = 0;
-      }
       notifyListeners(); // Notify listeners to update UI immediately
     }
 
@@ -49,8 +44,8 @@ class BlogModel extends ChangeNotifier {
 
     try {
       final BlogResponse blogResponse = await BlogApi.instance.getBlogs(
-        limit: _limit,
-        offset: _offset,
+        limit: limit,
+        offset: offset,
         searchTitle: searchTitle,
         userId: userId,
         orderBy: orderBy,
@@ -58,7 +53,7 @@ class BlogModel extends ChangeNotifier {
       );
 
       _totalBlogs = blogResponse.totalBlogs;
-      _blogs.addAll( blogResponse.blogs);
+      _blogs = blogResponse.blogs;
 
     } catch (e) {
       notifyListeners();
@@ -68,19 +63,6 @@ class BlogModel extends ChangeNotifier {
       _isFetching = false; // Reset fetching state after the process is done
       notifyListeners(); // Notify listeners that fetching is complete
     }
-  }
-
-  void setOffset(int offset) {
-    _offset = offset;
-  }
-
-  int getNumberOfPages() {
-    return (_totalBlogs / _limit).ceil();
-  }
-
-  String getCurrentPage() {
-    int currentPage = _offset + 1;
-    return '$currentPage';
   }
 
   int getIndexOfBlog(Blog blog) {
