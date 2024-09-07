@@ -1,8 +1,8 @@
 // lib/widgets/comment_list_widget.dart
 
 import 'package:flutter/material.dart';
-import '../model/comment.dart';  // Adjust the import according to your file structure
-import 'comment_card_widget.dart';  // Adjust the import according to your file structure
+import '../model/comment.dart'; // Adjust the import according to your file structure
+import 'comment_card_widget.dart'; // Adjust the import according to your file structure
 
 class CommentListWidget extends StatelessWidget {
   final List<Comment> comments;

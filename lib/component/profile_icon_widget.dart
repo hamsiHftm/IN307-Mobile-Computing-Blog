@@ -6,26 +6,25 @@ class ProfileIconWidget extends StatelessWidget {
   final double iconSize;
   final double containerSize;
 
-  const ProfileIconWidget({
-    super.key,
-    this.picUrl,
-    this.iconSize = 20.0,
-    this.containerSize = 15.0
-  });
+  const ProfileIconWidget(
+      {super.key,
+      this.picUrl,
+      this.iconSize = 20.0,
+      this.containerSize = 15.0});
 
   @override
   Widget build(BuildContext context) {
     return picUrl != null && picUrl!.isNotEmpty
         ? CircleAvatar(
-      radius: containerSize,
-      backgroundImage: NetworkImage(
-        picUrl!,
-      ),
-      onBackgroundImageError: (error, stackTrace) {
-        // Handle broken image scenario
-        _buildPlaceholder(context);
-      },
-    )
+            radius: containerSize,
+            backgroundImage: NetworkImage(
+              picUrl!,
+            ),
+            onBackgroundImageError: (error, stackTrace) {
+              // Handle broken image scenario
+              _buildPlaceholder(context);
+            },
+          )
         : _buildPlaceholder(context);
   }
 

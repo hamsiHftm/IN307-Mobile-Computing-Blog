@@ -28,9 +28,10 @@ class BlogErrorWidget extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Colors.white
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: Colors.white),
           ),
           const SizedBox(height: 8),
           IconButton(

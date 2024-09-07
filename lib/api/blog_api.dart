@@ -5,13 +5,11 @@ import 'package:http/http.dart' as http;
 class BlogApi {
   // Static instance + private Constructor for simple Singleton-approach
   static BlogApi instance = BlogApi._privateConstructor();
+
   BlogApi._privateConstructor();
 
   static const String _baseUrl = "10.0.2.2:8080";
-  final Map<String, String> _headers = {
-    'Content-Type': '*/*',
-    'Accept': '*/*'
-  };
+  final Map<String, String> _headers = {'Content-Type': '*/*', 'Accept': '*/*'};
 
   Future<BlogResponse> getBlogs({
     int limit = 10,
@@ -73,34 +71,58 @@ class BlogApi {
         final Map<String, dynamic> data = jsonDecode(response.body)['data'];
         return Blog.fromJson(data);
       } else {
-        throw Exception('Failed to load blog. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load blog. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to load blog. Exception: $e');
     }
   }
 
-  // TODO
   Future<Blog> updateBlog(Blog blog) async {
     try {
       var body = "";
-      final response = await http.patch(
-          Uri.http(_baseUrl, "/public/blog/${blog.id}"),
-          headers: _headers,
-          body: body
-      );
+      final response = await http.patch(Uri.http(_baseUrl, "/blogs/${blog.id}"),
+          headers: _headers, body: body);
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body)['data'];
         return Blog.fromJson(data);
       } else {
-        throw Exception('Failed to load blog. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load blog. Status code: ${response.statusCode}');
       }
-        return blog;
+      return blog;
     } catch (e) {
       throw Exception('Failed to update blog. Exception: $e');
     }
   }
 
+  Future<Blog> addBlog(
+      {required String title,
+      required String content,
+      required int userId,
+      String picUrl = ''}) async {
+    try {
+      var body = jsonEncode({
+        'title': title,
+        'content': content,
+        'picUrl': picUrl,
+        'userId': '$userId'
+      });
+      ;
+      final response = await http.post(Uri.http(_baseUrl, "/blogs"),
+          headers: _headers, body: body);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body)['data'];
+        return Blog.fromJson(data);
+      } else {
+        throw Exception(
+            'Failed to load blog. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to update blog. Exception: $e');
+    }
+  }
 }
 
 class BlogResponse {
@@ -109,4 +131,3 @@ class BlogResponse {
 
   BlogResponse({required this.blogs, required this.totalBlogs});
 }
-

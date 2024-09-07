@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart';
+import 'package:provider/provider.dart';
 
-import '../model/blog.dart';
+import '../model/user.dart';
+import '../provider/blog_provider.dart';
+import '../provider/user_provider.dart';
+import 'login_view.dart';
 
 class BlogFormView extends StatefulWidget {
-  final Blog? blog;
-
-  const BlogFormView({Key? key, this.blog}) : super(key: key);
+  const BlogFormView({Key? key}) : super(key: key);
 
   @override
   _BlogFormViewState createState() => _BlogFormViewState();
@@ -23,9 +24,9 @@ class _BlogFormViewState extends State<BlogFormView> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.blog?.title ?? '');
-    _contentController = TextEditingController(text: widget.blog?.content ?? '');
-    _picUrlController = TextEditingController(text: widget.blog?.picUrl ?? '');
+    _titleController = TextEditingController();
+    _contentController = TextEditingController();
+    _picUrlController = TextEditingController();
   }
 
   @override
@@ -36,32 +37,6 @@ class _BlogFormViewState extends State<BlogFormView> {
     super.dispose();
   }
 
-  void _showImagePreview() {
-    final url = _picUrlController.text;
-    if (url.isNotEmpty) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Image Preview'),
-          content: Image.network(
-            url,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Center(child: CircularProgressIndicator());
-            },
-            errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   Future<void> _saveBlog() async {
     FocusScope.of(context).unfocus();
 
@@ -70,150 +45,207 @@ class _BlogFormViewState extends State<BlogFormView> {
         _isLoading = true;
       });
 
-      // Assume you have a method to save the blog; replace with your actual implementation
-      bool success = true; // Replace with actual save method
+      try {
+        // Get the BlogModel instance from the provider
+        final blogModel = Provider.of<BlogModel>(context, listen: false);
+        final user = Provider.of<UserProvider>(context, listen: false).user;
 
-      if (success) {
-        Navigator.of(context).pop(true); // Pass true if save is successful
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
+        // Call the addBlog method from BlogModel
+        await blogModel.addBlog(
+          title: _titleController.text,
+          content: _contentController.text,
+          picUrl: _picUrlController.text,
+          user: user ?? User(id: 1, email: ''), // Use user from UserProvider
+        );
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'Blog saved successfully!',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.green, // Green background for success
+        ));
+
+        // Clear the form fields
+        _titleController.clear();
+        _contentController.clear();
+        _picUrlController.clear();
+      } catch (e) {
+        // Handle error and show error message
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             'Saving blog failed. Please try again.',
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold),
           ),
+          backgroundColor: Colors.red, // Red background for error
         ));
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    final isLoggedIn = userProvider.isLoggedIn;
+
+    if (!isLoggedIn) {
+      // User is not logged in
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Login Required'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => LoginView()),
+              );
+            },
+            child: Text('Login to Create Blog'),
+          ),
+        ),
+      );
+    }
+
+    // User is logged in
     final colorScheme = Theme.of(context).colorScheme;
     final textColorSecondary = colorScheme.secondary;
     final textColorPrimary = Theme.of(context).primaryColor;
 
-    return BlogScaffoldWidget(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Scrollbar(
-          child: SingleChildScrollView(
-            child: Center(
-              child: Card(
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  side: BorderSide(color: colorScheme.onSurface, width: 1),
-                ),
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(height: 20),
-                      Text(
-                        'Create/Edit Blog',
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          fontSize: 40.0,
-                          color: textColorSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      Text(
-                        'Fill out the form below to create or edit a blog post.',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: textColorSecondary,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _titleController,
-                              style: TextStyle(color: textColorSecondary),
-                              decoration: InputDecoration(
-                                labelText: 'Title',
-                                suffixText: '*',
-                                labelStyle: TextStyle(color: textColorSecondary),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: textColorSecondary),
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: textColorSecondary),
-                                ),
-                                errorStyle: TextStyle(color: textColorPrimary),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Scrollbar(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Card(
+              elevation: 0,
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+                side: BorderSide(color: colorScheme.onSurface, width: 1),
+              ),
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 20),
+                    Text(
+                      'Create Blog',
+                      style:
+                          Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                fontSize: 40.0,
+                                color: textColorSecondary,
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Title cannot be empty.';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _contentController,
-                              maxLines: null, // Unlimited lines
-                              decoration: InputDecoration(
-                                labelText: 'Content',
-                                suffixText: '*',
-                                labelStyle: TextStyle(color: textColorSecondary),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: textColorSecondary),
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: textColorSecondary),
-                                ),
-                                errorStyle: TextStyle(color: textColorPrimary),
+                    ),
+                    const SizedBox(height: 25),
+                    Text(
+                      'Fill out the form below to create a new blog post.',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: textColorSecondary,
+                          ),
+                    ),
+                    const SizedBox(height: 30),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _titleController,
+                            style: TextStyle(color: textColorSecondary),
+                            decoration: InputDecoration(
+                              labelText: 'Title',
+                              suffixText: '*',
+                              labelStyle: TextStyle(color: textColorSecondary),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: textColorSecondary),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Content cannot be empty.';
-                                }
-                                if (value.length > 10) {
-                                  return 'Content cannot exceed 10 characters.';
-                                }
-                                return null;
-                              },
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: textColorSecondary),
+                              ),
+                              errorStyle: TextStyle(color: textColorPrimary),
                             ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _picUrlController,
-                              decoration: InputDecoration(
-                                labelText: 'Image URL',
-                                labelStyle: TextStyle(color: textColorSecondary),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: textColorSecondary),
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: textColorSecondary),
-                                ),
-                                suffixIcon: _picUrlController.text.isNotEmpty
-                                    ? IconButton(
-                                  icon: const Icon(Icons.preview),
-                                  onPressed: _showImagePreview,
-                                )
-                                    : null,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Title cannot be empty.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          TextFormField(
+                            controller: _contentController,
+                            maxLines: null,
+                            // Unlimited lines
+                            style: TextStyle(color: textColorSecondary),
+                            // Apply secondary color here
+                            decoration: InputDecoration(
+                              labelText: 'Content',
+                              suffixText: '*',
+                              labelStyle: TextStyle(color: textColorSecondary),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: textColorSecondary),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: textColorSecondary),
+                              ),
+                              errorStyle: TextStyle(color: textColorPrimary),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Content cannot be empty.';
+                              }
+                              if (value.length < 10) {
+                                return 'Content must be at least 10 characters.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          TextFormField(
+                            controller: _picUrlController,
+                            style: TextStyle(color: textColorSecondary),
+                            // Apply secondary color here
+                            decoration: InputDecoration(
+                              labelText: 'Image URL',
+                              labelStyle: TextStyle(color: textColorSecondary),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: textColorSecondary),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: textColorSecondary),
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            _isLoading
-                                ? const CircularProgressIndicator()
-                                : ElevatedButton(
-                              onPressed: _saveBlog,
-                              child: const Text('Save'),
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 20),
+                          _isLoading
+                              ? const CircularProgressIndicator()
+                              : ElevatedButton(
+                                  onPressed: _saveBlog,
+                                  child: const Text('Save'),
+                                ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

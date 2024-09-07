@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:in307_mobile_computing_blog/component/profile_icon_widget.dart';
-import '../model/comment.dart';  // Adjust the import according to your file structure
+import '../model/comment.dart'; // Adjust the import according to your file structure
 
 class CommentCardWidget extends StatelessWidget {
   final Comment comment;

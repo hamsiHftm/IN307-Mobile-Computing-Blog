@@ -3,6 +3,8 @@ import '../api/blog_api.dart';
 import '../model/blog.dart';
 import 'dart:math';
 
+import '../model/user.dart';
+
 class BlogModel extends ChangeNotifier {
   List<Blog> _blogs = [];
   bool _isFetching = false;
@@ -10,24 +12,26 @@ class BlogModel extends ChangeNotifier {
   int _totalBlogs = 0;
 
   List<Blog> get blogs => _blogs;
+
   bool get isFetching => _isFetching;
+
   String get searchTerm => _searchTerm;
+
   int get totalBlogs => _totalBlogs;
 
   BlogModel() {
     // fetchBlogs(); // Fetch blogs when the model is created
   }
 
-  Future<void> fetchBlogs({
-    bool refresh = false,
-    bool nextPage = false,
-    String searchTitle = '',
-    int? userId,
-    String orderBy = 'createdAt',
-    bool asc = true,
-    offset = 0,
-    limit = 10
-  }) async {
+  Future<void> fetchBlogs(
+      {bool refresh = false,
+      bool nextPage = false,
+      String searchTitle = '',
+      int? userId,
+      String orderBy = 'createdAt',
+      bool asc = true,
+      offset = 0,
+      limit = 10}) async {
     if (_isFetching) return; // Prevent duplicate fetching
 
     // setting current search value
@@ -54,7 +58,6 @@ class BlogModel extends ChangeNotifier {
 
       _totalBlogs = blogResponse.totalBlogs;
       _blogs = blogResponse.blogs;
-
     } catch (e) {
       notifyListeners();
       // Handle error: throw exception or set an error message to show in the UI
@@ -69,14 +72,48 @@ class BlogModel extends ChangeNotifier {
     return _blogs.indexOf(blog);
   }
 
-  void addBlog(Blog newBlog) {
-    _blogs.add(newBlog);
-    notifyListeners(); // Notify listeners that the data has changed
-  }
+  Future<void> addBlog({
+    required String title,
+    required String content,
+    required User user,
+    String picUrl = '',
+  }) async {
+    if (_isFetching) return; // Prevent adding blog while fetching
 
-  void editBlog(int index, Blog editedBlog) {
-    _blogs[index] = editedBlog;
-    notifyListeners(); // Notify listeners that the data has changed
+    _isFetching = true;
+    notifyListeners(); // Notify listeners that fetching has started
+
+    try {
+      final Blog addedBlog = await BlogApi.instance.addBlog(
+        title: title,
+        content: content,
+        userId: user.id,
+        picUrl: picUrl,
+      );
+
+      // Add the new blog to the list
+      _blogs.add(addedBlog);
+      _totalBlogs += 1; // Increment the total count
+      notifyListeners(); // Notify listeners that the data has changed
+
+      // Optionally show a success message or perform other actions
+      // Example: Show a success message (requires BuildContext)
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text('Blog added successfully!'),
+      //   backgroundColor: Colors.green,
+      // ));
+    } catch (e) {
+      // Handle errors
+      // Example: Show an error message (requires BuildContext)
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //   content: Text('Failed to add blog. Please try again.'),
+      //   backgroundColor: Colors.red,
+      // ));
+      throw e; // Propagate the error to handle it in the UI
+    } finally {
+      _isFetching = false;
+      notifyListeners(); // Notify listeners that fetching is complete
+    }
   }
 
   void toggleFavorite(int index) {

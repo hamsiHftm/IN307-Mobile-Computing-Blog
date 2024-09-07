@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/user_api.dart'; // Import your UserApi class
-import '../model/user.dart';   // Import the User model
+import '../model/user.dart'; // Import the User model
 
 class UserProvider with ChangeNotifier {
   bool _isLoggedIn = false;
@@ -8,6 +8,7 @@ class UserProvider with ChangeNotifier {
   String? _errorMessage; // Store the error message if login fails
 
   bool get isLoggedIn => _isLoggedIn;
+
   User? get user => _user; // Getter to access the logged-in user
   String? get errorMessage => _errorMessage; // Getter for the error message
 
@@ -40,10 +41,18 @@ class UserProvider with ChangeNotifier {
     notifyListeners(); // Notify listeners about the logout
   }
 
-  signUp({required String email, required String password, String firstname = '', String lastname = ''}) async {
+  signUp(
+      {required String email,
+      required String password,
+      String firstname = '',
+      String lastname = ''}) async {
     try {
       // Call the UserApi to perform the login
-      _user = await UserApi.instance.signup(email: email, password: password, firstname: firstname, lastname: lastname);
+      _user = await UserApi.instance.signup(
+          email: email,
+          password: password,
+          firstname: firstname,
+          lastname: lastname);
       // If login is successful, update login state and notify listeners
       _isLoggedIn = true;
       _errorMessage = null; // Clear previous error messages

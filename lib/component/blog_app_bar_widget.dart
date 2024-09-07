@@ -21,17 +21,17 @@ class BlogAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       leading: showBackButton
           ? IconButton(
-        icon: const Icon(Icons.arrow_back),
-        color: Colors.white,
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      )
+              icon: const Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
           : IconButton(
-        icon: const Icon(Icons.person),
-        color: Colors.white,
-        onPressed: onProfilePressed,
-      ),
+              icon: const Icon(Icons.person),
+              color: Colors.white,
+              onPressed: onProfilePressed,
+            ),
       actions: [
         if (tabController != null && tabController!.index == 0)
           IconButton(

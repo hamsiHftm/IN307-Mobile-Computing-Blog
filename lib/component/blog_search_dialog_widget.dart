@@ -72,7 +72,8 @@ class _BlogSearchDialogState extends State<BlogSearchDialog> {
         // Cancel button to close the dialog
         TextButton(
           onPressed: () {
-            Navigator.pop(context); // Closes the dialog without performing any action
+            Navigator.pop(
+                context); // Closes the dialog without performing any action
           },
           child: const Text('Cancel'),
         ),
@@ -80,10 +81,10 @@ class _BlogSearchDialogState extends State<BlogSearchDialog> {
         ElevatedButton(
           onPressed: isButtonActive
               ? () {
-            // Trigger search action and close the dialog if the button is active
-            widget.onSearch(searchController.text);
-            Navigator.pop(context);
-          }
+                  // Trigger search action and close the dialog if the button is active
+                  widget.onSearch(searchController.text);
+                  Navigator.pop(context);
+                }
               : null, // Disable the button when the input is empty
           child: const Text('Search'),
         ),

@@ -38,7 +38,8 @@ class _LoginViewState extends State<LoginView> {
         _isLoading = true;
       });
 
-      bool success = await Provider.of<UserProvider>(context, listen: false).login(
+      bool success =
+          await Provider.of<UserProvider>(context, listen: false).login(
         _emailController.text,
         _passwordController.text,
       );
@@ -52,7 +53,9 @@ class _LoginViewState extends State<LoginView> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             'Login failed. Please try again.',
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold),
           ),
         ));
       }
@@ -67,7 +70,8 @@ class _LoginViewState extends State<LoginView> {
         _isLoading = true;
       });
 
-      bool success = await Provider.of<UserProvider>(context, listen: false).signUp(
+      bool success =
+          await Provider.of<UserProvider>(context, listen: false).signUp(
         firstname: _firstNameController.text,
         lastname: _lastNameController.text,
         email: _emailController.text,
@@ -83,7 +87,9 @@ class _LoginViewState extends State<LoginView> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
             'Sign-up failed. Please try again.',
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold),
           ),
         ));
       }
@@ -105,7 +111,8 @@ class _LoginViewState extends State<LoginView> {
             child: Center(
               child: Card(
                 elevation: 0,
-                color: Colors.white, // Set background color to white
+                color: Colors.white,
+                // Set background color to white
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                   side: BorderSide(color: colorScheme.onSurface, width: 1),
@@ -121,17 +128,21 @@ class _LoginViewState extends State<LoginView> {
                         // Login Form
                         Text(
                           'Login',
-                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            fontSize: 40.0,
-                            color: textColorSecondary,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge
+                              ?.copyWith(
+                                fontSize: 40.0,
+                                color: textColorSecondary,
+                              ),
                         ),
                         const SizedBox(height: 25),
                         Text(
                           'Please enter your email and password to log in.',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: textColorSecondary,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: textColorSecondary,
+                                  ),
                         ),
                         const SizedBox(height: 30),
                         Form(
@@ -140,18 +151,23 @@ class _LoginViewState extends State<LoginView> {
                             children: [
                               TextFormField(
                                 controller: _emailController,
-                                style: TextStyle(color: textColorSecondary), // Set input text color
+                                style: TextStyle(color: textColorSecondary),
+                                // Set input text color
                                 decoration: InputDecoration(
                                   labelText: 'Email',
                                   suffixText: '*',
-                                  labelStyle: TextStyle(color: textColorSecondary),
+                                  labelStyle:
+                                      TextStyle(color: textColorSecondary),
                                   focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
-                                  errorStyle: TextStyle(color: textColorPrimary),
+                                  errorStyle:
+                                      TextStyle(color: textColorPrimary),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -166,18 +182,23 @@ class _LoginViewState extends State<LoginView> {
                               const SizedBox(height: 20),
                               TextFormField(
                                 controller: _passwordController,
-                                style: TextStyle(color: textColorSecondary), // Set input text color
+                                style: TextStyle(color: textColorSecondary),
+                                // Set input text color
                                 decoration: InputDecoration(
                                   labelText: 'Password',
                                   suffixText: '*',
-                                  labelStyle: TextStyle(color: textColorSecondary),
+                                  labelStyle:
+                                      TextStyle(color: textColorSecondary),
                                   focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
-                                  errorStyle: TextStyle(color: textColorPrimary),
+                                  errorStyle:
+                                      TextStyle(color: textColorPrimary),
                                 ),
                                 obscureText: true,
                                 validator: (value) {
@@ -191,9 +212,9 @@ class _LoginViewState extends State<LoginView> {
                               _isLoading
                                   ? const CircularProgressIndicator()
                                   : ElevatedButton(
-                                onPressed: _login,
-                                child: const Text('Login'),
-                              ),
+                                      onPressed: _login,
+                                      child: const Text('Login'),
+                                    ),
                               TextButton(
                                 onPressed: () {
                                   setState(() {
@@ -212,17 +233,21 @@ class _LoginViewState extends State<LoginView> {
                         // Sign-up Form
                         Text(
                           'Sign Up',
-                          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                            fontSize: 40.0,
-                            color: textColorSecondary,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge
+                              ?.copyWith(
+                                fontSize: 40.0,
+                                color: textColorSecondary,
+                              ),
                         ),
                         const SizedBox(height: 25),
                         Text(
                           'Create a new account by filling out the form below.',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: textColorSecondary,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: textColorSecondary,
+                                  ),
                         ),
                         const SizedBox(height: 30),
                         Form(
@@ -231,15 +256,19 @@ class _LoginViewState extends State<LoginView> {
                             children: [
                               TextFormField(
                                 controller: _firstNameController,
-                                style: TextStyle(color: textColorSecondary), // Set input text color
+                                style: TextStyle(color: textColorSecondary),
+                                // Set input text color
                                 decoration: InputDecoration(
                                   labelText: 'First Name',
-                                  labelStyle: TextStyle(color: textColorSecondary),
+                                  labelStyle:
+                                      TextStyle(color: textColorSecondary),
                                   focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                 ),
                                 // First name is not required
@@ -247,15 +276,19 @@ class _LoginViewState extends State<LoginView> {
                               const SizedBox(height: 20),
                               TextFormField(
                                 controller: _lastNameController,
-                                style: TextStyle(color: textColorSecondary), // Set input text color
+                                style: TextStyle(color: textColorSecondary),
+                                // Set input text color
                                 decoration: InputDecoration(
                                   labelText: 'Last Name',
-                                  labelStyle: TextStyle(color: textColorSecondary),
+                                  labelStyle:
+                                      TextStyle(color: textColorSecondary),
                                   focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                 ),
                                 // Last name is not required
@@ -263,18 +296,23 @@ class _LoginViewState extends State<LoginView> {
                               const SizedBox(height: 20),
                               TextFormField(
                                 controller: _emailController,
-                                style: TextStyle(color: textColorSecondary), // Set input text color
+                                style: TextStyle(color: textColorSecondary),
+                                // Set input text color
                                 decoration: InputDecoration(
                                   labelText: 'Email',
                                   suffixText: '*',
-                                  labelStyle: TextStyle(color: textColorSecondary),
+                                  labelStyle:
+                                      TextStyle(color: textColorSecondary),
                                   focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
-                                  errorStyle: TextStyle(color: textColorPrimary),
+                                  errorStyle:
+                                      TextStyle(color: textColorPrimary),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -289,18 +327,23 @@ class _LoginViewState extends State<LoginView> {
                               const SizedBox(height: 20),
                               TextFormField(
                                 controller: _passwordController,
-                                style: TextStyle(color: textColorSecondary), // Set input text color
+                                style: TextStyle(color: textColorSecondary),
+                                // Set input text color
                                 decoration: InputDecoration(
                                   labelText: 'Password',
                                   suffixText: '*',
-                                  labelStyle: TextStyle(color: textColorSecondary),
+                                  labelStyle:
+                                      TextStyle(color: textColorSecondary),
                                   focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
-                                  errorStyle: TextStyle(color: textColorPrimary),
+                                  errorStyle:
+                                      TextStyle(color: textColorPrimary),
                                 ),
                                 obscureText: true,
                                 validator: (value) {
@@ -313,18 +356,23 @@ class _LoginViewState extends State<LoginView> {
                               const SizedBox(height: 20),
                               TextFormField(
                                 controller: _repeatPasswordController,
-                                style: TextStyle(color: textColorSecondary), // Set input text color
+                                style: TextStyle(color: textColorSecondary),
+                                // Set input text color
                                 decoration: InputDecoration(
                                   labelText: 'Repeat Password',
                                   suffixText: '*',
-                                  labelStyle: TextStyle(color: textColorSecondary),
+                                  labelStyle:
+                                      TextStyle(color: textColorSecondary),
                                   focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: textColorSecondary),
+                                    borderSide:
+                                        BorderSide(color: textColorSecondary),
                                   ),
-                                  errorStyle: TextStyle(color: textColorPrimary),
+                                  errorStyle:
+                                      TextStyle(color: textColorPrimary),
                                 ),
                                 obscureText: true,
                                 validator: (value) {
@@ -341,13 +389,14 @@ class _LoginViewState extends State<LoginView> {
                               _isLoading
                                   ? const CircularProgressIndicator()
                                   : ElevatedButton(
-                                onPressed: _signUp,
-                                child: const Text('Sign Up'),
-                              ),
+                                      onPressed: _signUp,
+                                      child: const Text('Sign Up'),
+                                    ),
                               TextButton(
                                 onPressed: () {
                                   setState(() {
-                                    _isLogin = true; // Switch back to login view
+                                    _isLogin =
+                                        true; // Switch back to login view
                                   });
                                 },
                                 child: Text(

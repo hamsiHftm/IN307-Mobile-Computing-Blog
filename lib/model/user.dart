@@ -15,15 +15,16 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      email: json['email'],
-      firstname: json['firstname'],
-      lastname: json['lastname'],
-      picUrl: json['picUrl']
-    );
+        id: json['id'],
+        email: json['email'],
+        firstname: json['firstname'],
+        lastname: json['lastname'],
+        picUrl: json['picUrl']);
   }
 
   String getDisplayName() {
-    return (firstname?.isNotEmpty == true && lastname?.isNotEmpty == true) ? '$firstname $lastname' : email ?? 'Unknown user';
+    return (firstname?.isNotEmpty == true && lastname?.isNotEmpty == true)
+        ? '$firstname $lastname'
+        : email ?? 'Unknown user';
   }
 }

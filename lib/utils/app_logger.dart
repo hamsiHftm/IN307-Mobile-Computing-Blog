@@ -3,7 +3,8 @@ import 'package:logger/logger.dart';
 // It's not in use
 class AppLogger {
   static final Logger _logger = Logger(
-    level: Level.debug, // Set the logging level (e.g., verbose, debug, info, warning, error, wtf)
+    level: Level.debug,
+    // Set the logging level (e.g., verbose, debug, info, warning, error, wtf)
     printer: PrettyPrinter(
       methodCount: 2, // Number of method calls to display
       errorMethodCount: 8, // Number of error method calls to display

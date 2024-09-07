@@ -108,24 +108,24 @@ class _BlogInfoViewState extends State<BlogInfoView> {
                             // Background image
                             blog.picUrl != null && blog.picUrl!.isNotEmpty
                                 ? Image.network(
-                              blog.picUrl!,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Icon(
-                                    Icons.broken_image,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.5,
-                                    color: Colors.grey,
-                                  ),
-                            )
+                                    blog.picUrl!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) => Icon(
+                                      Icons.broken_image,
+                                      size: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      color: Colors.grey,
+                                    ),
+                                  )
                                 : Center(
-                              child: Icon(
-                                Icons.image_sharp,
-                                size: MediaQuery.of(context).size.width *
-                                    0.5,
-                                color: Colors.grey,
-                              ),
-                            ),
+                                    child: Icon(
+                                      Icons.image_sharp,
+                                      size: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                             // Gradient overlay
                             Container(
                               decoration: BoxDecoration(
@@ -230,8 +230,8 @@ class _BlogInfoViewState extends State<BlogInfoView> {
                         blog.comments != null && blog.comments!.isNotEmpty
                             ? CommentListWidget(comments: blog.comments!)
                             : Center(
-                          child: Text('No comments yet.'),
-                        ),
+                                child: Text('No comments yet.'),
+                              ),
                       ],
                     ),
                   ),

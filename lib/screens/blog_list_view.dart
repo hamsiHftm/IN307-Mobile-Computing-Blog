@@ -55,16 +55,17 @@ class _BlogListViewState extends State<BlogListView> {
           ? userProvider.user?.id
           : null;
 
-
       await Provider.of<BlogModel>(context, listen: false).fetchBlogs(
         refresh: refresh,
         offset: _currentPage - 1,
-        limit: _limit, // Pass the limit to fetch a fixed number of blogs per page
+        limit: _limit,
+        // Pass the limit to fetch a fixed number of blogs per page
         userId: userId,
       );
     } catch (e) {
       setState(() {
-        _errorMessage = 'Something went wrong. Cannot fetch blogs. Please try again later.';
+        _errorMessage =
+            'Something went wrong. Cannot fetch blogs. Please try again later.';
       });
     }
   }
@@ -76,7 +77,8 @@ class _BlogListViewState extends State<BlogListView> {
 
   Future<void> _nextPage() async {
     // Increase currentPage if there are more blogs to fetch
-    if (_currentPage * _limit < Provider.of<BlogModel>(context, listen: false).totalBlogs) {
+    if (_currentPage * _limit <
+        Provider.of<BlogModel>(context, listen: false).totalBlogs) {
       setState(() {
         _currentPage += 1;
       });
@@ -172,10 +174,12 @@ class _BlogListViewState extends State<BlogListView> {
                             ? null
                             : _prevPage, // Call _prevPage if there are previous pages
                       ),
-                      Text('${_currentPage} / ${max(1, (blogModel.totalBlogs / _limit).ceil())}'),
+                      Text(
+                          '${_currentPage} / ${max(1, (blogModel.totalBlogs / _limit).ceil())}'),
                       IconButton(
                         icon: const Icon(Icons.arrow_right),
-                        onPressed: (_currentPage * _limit >= blogModel.totalBlogs)
+                        onPressed: (_currentPage * _limit >=
+                                blogModel.totalBlogs)
                             ? null
                             : _nextPage, // Call _nextPage if there are more pages
                       ),

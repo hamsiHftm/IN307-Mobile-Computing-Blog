@@ -20,7 +20,8 @@ class BlogCardWidget extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
-        side: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1),
+        side: BorderSide(
+            color: Theme.of(context).colorScheme.onSurface, width: 1),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Padding(
@@ -67,7 +68,8 @@ class BlogCardWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            const SizedBox(width: 16), // space between blog image and blog details
+            const SizedBox(width: 16),
+            // space between blog image and blog details
             // Right Column: Blog Details
             Expanded(
               child: Column(
@@ -79,14 +81,16 @@ class BlogCardWidget extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineMedium,
                     overflow: TextOverflow.clip,
                   ),
-                  const SizedBox(height: 8), // space between row
+                  const SizedBox(height: 8),
+                  // space between row
                   // User Info: Name and Profile Pic
                   Row(
                     children: [
                       ProfileIconWidget(
                         picUrl: blog.user?.picUrl,
                       ),
-                      const SizedBox(width: 8), // Spacing between the avatar and the text
+                      const SizedBox(width: 8),
+                      // Spacing between the avatar and the text
                       Expanded(
                         child: Text(
                           blog.user!.getDisplayName(),
@@ -96,23 +100,18 @@ class BlogCardWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8), // space between row
+                  const SizedBox(height: 8),
+                  // space between row
                   // Blog Details: Likes and Creation Date (on the same line with a dot separator)
                   Row(
                     children: [
-                      Text(
-                        '${blog.numberOfLikes} Likes',
-                          style: Theme.of(context).textTheme.labelSmall
-                      ),
+                      Text('${blog.numberOfLikes} Likes',
+                          style: Theme.of(context).textTheme.labelSmall),
                       const SizedBox(width: 4), // Spacing between the text
-                      Text(
-                        '•', style: Theme.of(context).textTheme.labelSmall
-                      ),
+                      Text('•', style: Theme.of(context).textTheme.labelSmall),
                       const SizedBox(width: 4), // Spacing between the text
-                      Text(
-                        createdDate,
-                        style: Theme.of(context).textTheme.labelSmall
-                      ),
+                      Text(createdDate,
+                          style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
                 ],

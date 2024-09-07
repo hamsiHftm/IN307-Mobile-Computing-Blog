@@ -35,12 +35,12 @@ class BlogScaffoldWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-              BlogAppBarWidget(
-                tabController: tabController,
-                onProfilePressed: onProfilePressed,
-                onSearchPressed: onSearchPressed,
-                showBackButton: showBackButton,
-              ),
+            BlogAppBarWidget(
+              tabController: tabController,
+              onProfilePressed: onProfilePressed,
+              onSearchPressed: onSearchPressed,
+              showBackButton: showBackButton,
+            ),
             Expanded(child: body),
           ],
         ),
