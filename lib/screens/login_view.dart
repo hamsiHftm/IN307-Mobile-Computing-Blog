@@ -171,7 +171,7 @@ class _LoginViewState extends State<LoginView> {
                             ],
                             _buildTextField(
                               controller: _emailController,
-                              labelText: 'Email',
+                              labelText: 'Email *',
                               isPassword: false,
                               suffixText: '*',
                               validator: (value) {
@@ -187,7 +187,7 @@ class _LoginViewState extends State<LoginView> {
                             const SizedBox(height: 20),
                             _buildTextField(
                               controller: _passwordController,
-                              labelText: 'Password',
+                              labelText: 'Password *',
                               isPassword: true,
                               suffixText: '*',
                               validator: (value) {
@@ -201,7 +201,7 @@ class _LoginViewState extends State<LoginView> {
                               const SizedBox(height: 20),
                               _buildTextField(
                                 controller: _repeatPasswordController,
-                                labelText: 'Repeat Password',
+                                labelText: 'Repeat Password *',
                                 isPassword: true,
                                 suffixText: '*',
                                 validator: (value) {

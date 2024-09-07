@@ -183,7 +183,7 @@ class _BlogFormViewState extends State<BlogFormView> {
                             controller: _titleController,
                             style: TextStyle(color: textColorSecondary),
                             decoration: inputDecoration.copyWith(
-                              labelText: 'Title',
+                              labelText: 'Title *',
                               suffixText: '*',
                             ),
                             validator: (value) {
@@ -199,8 +199,9 @@ class _BlogFormViewState extends State<BlogFormView> {
                             maxLines: null,
                             style: TextStyle(color: textColorSecondary),
                             decoration: inputDecoration.copyWith(
-                              labelText: 'Content',
+                              labelText: 'Content *',
                               suffixText: '*',
+                              hintText: 'min. 10 characters',
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -218,6 +219,7 @@ class _BlogFormViewState extends State<BlogFormView> {
                             style: TextStyle(color: textColorSecondary),
                             decoration: inputDecoration.copyWith(
                               labelText: 'Image URL',
+                              hintText: 'Network image URL',
                             ),
                           ),
                           const SizedBox(height: 20),

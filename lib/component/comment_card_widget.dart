@@ -51,7 +51,7 @@ class CommentCardWidget extends StatelessWidget {
                   // Comment metadata: number of likes
                   Row(
                     children: [
-                      Icon(Icons.access_time, size: 16.0),
+                      Icon(Icons.favorite, size: 16.0, color: Colors.white,),
                       SizedBox(width: 4.0),
                       Text(
                         '${comment.numberOfLikes} Likes',

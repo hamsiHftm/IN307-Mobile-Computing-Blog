@@ -81,7 +81,7 @@ class _BlogDetailViewState extends State<BlogDetailView> {
                           children: [
                             Text(
                               blog.user!.getDisplayName(),
-                              style: Theme.of(context).textTheme.headlineLarge,
+                              style: Theme.of(context).textTheme.headlineMedium,
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(timeago.format(blog.createdAt)),

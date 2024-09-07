@@ -51,8 +51,9 @@ class ProfileView extends StatelessWidget {
           Center(
             child: Text(
               user?.getDisplayName() ?? 'User',
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.white,
+                overflow:  TextOverflow.ellipsis
               ),
             ),
           ),
