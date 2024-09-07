@@ -10,6 +10,7 @@ class BlogScaffoldWidget extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final bool showBackButton;
   final bool disableAppBar; // New parameter to control visibility of the app bar
+  final bool resizeToAvoidBottomInset; // New parameter to control keyboard resize behavior
 
   const BlogScaffoldWidget({
     super.key,
@@ -21,11 +22,13 @@ class BlogScaffoldWidget extends StatelessWidget {
     this.bottomNavigationBar,
     this.showBackButton = false,
     this.disableAppBar = false, // Default value is false (app bar is shown by default)
+    this.resizeToAvoidBottomInset = true, // Default value is true (resize to avoid bottom inset)
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset, // Use the parameter here
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

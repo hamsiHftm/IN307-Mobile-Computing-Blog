@@ -39,4 +39,6 @@ class UserProvider with ChangeNotifier {
     _errorMessage = null; // Clear error messages on logout
     notifyListeners(); // Notify listeners about the logout
   }
+
+  signUp(String text, String text2, String text3, String text4) {}
 }
