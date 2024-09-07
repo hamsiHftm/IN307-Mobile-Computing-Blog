@@ -19,8 +19,9 @@ class BlogInfoView extends StatefulWidget {
 class _BlogInfoViewState extends State<BlogInfoView> {
   late Future<Blog?> _futureBlog;
   String? _errorMessage;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   double _appBarOpacity = 0.0;
+  static const double _maxOffset = 150.0;
 
   @override
   void initState() {
@@ -37,10 +38,8 @@ class _BlogInfoViewState extends State<BlogInfoView> {
 
   void _scrollListener() {
     double offset = _scrollController.offset;
-    double maxOffset = 150.0; // Adjust this value based on your needs
-
     setState(() {
-      _appBarOpacity = (offset / maxOffset).clamp(0.0, 1.0);
+      _appBarOpacity = (offset / _maxOffset).clamp(0.0, 1.0);
     });
   }
 
@@ -67,7 +66,7 @@ class _BlogInfoViewState extends State<BlogInfoView> {
           } else if (snapshot.hasError || snapshot.data == null) {
             return BlogErrorWidget(
               message: _errorMessage ?? 'An error occurred',
-              onRetry: () {},
+              onRetry: () => setState(() => _futureBlog = _fetchBlogDetails()),
               withScaffold: true,
             );
           } else {
@@ -105,28 +104,23 @@ class _BlogInfoViewState extends State<BlogInfoView> {
                         background: Stack(
                           fit: StackFit.expand,
                           children: [
-                            // Background image
                             blog.picUrl != null && blog.picUrl!.isNotEmpty
                                 ? Image.network(
-                                    blog.picUrl!,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) => Icon(
-                                      Icons.broken_image,
-                                      size: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      color: Colors.grey,
-                                    ),
-                                  )
+                              blog.picUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Icon(
+                                Icons.broken_image,
+                                size: MediaQuery.of(context).size.width * 0.5,
+                                color: Colors.grey,
+                              ),
+                            )
                                 : Center(
-                                    child: Icon(
-                                      Icons.image_sharp,
-                                      size: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                            // Gradient overlay
+                              child: Icon(
+                                Icons.image_sharp,
+                                size: MediaQuery.of(context).size.width * 0.5,
+                                color: Colors.grey,
+                              ),
+                            ),
                             Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
@@ -139,10 +133,8 @@ class _BlogInfoViewState extends State<BlogInfoView> {
                                 ),
                               ),
                             ),
-                            // Background color and opacity for the title visibility
                             Container(
-                              color: Colors.black
-                                  .withOpacity(_appBarOpacity * 0.6),
+                              color: Colors.black.withOpacity(_appBarOpacity * 0.6),
                             ),
                           ],
                         ),
@@ -153,9 +145,7 @@ class _BlogInfoViewState extends State<BlogInfoView> {
                     padding: const EdgeInsets.only(left: 16.0),
                     child: IconButton(
                       icon: Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                   ),
                   actions: [
@@ -230,8 +220,8 @@ class _BlogInfoViewState extends State<BlogInfoView> {
                         blog.comments != null && blog.comments!.isNotEmpty
                             ? CommentListWidget(comments: blog.comments!)
                             : Center(
-                                child: Text('No comments yet.'),
-                              ),
+                          child: Text('No comments yet.'),
+                        ),
                       ],
                     ),
                   ),

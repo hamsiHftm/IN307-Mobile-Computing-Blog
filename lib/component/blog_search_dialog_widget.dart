@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BlogSearchDialog extends StatefulWidget {
+  // Callback function to be called with the search query
   final Function(String) onSearch;
 
   // Constructor to initialize the dialog with a callback function for search action
@@ -11,7 +12,10 @@ class BlogSearchDialog extends StatefulWidget {
 }
 
 class _BlogSearchDialogState extends State<BlogSearchDialog> {
+  // Controller for the search input field
   final TextEditingController searchController = TextEditingController();
+
+  // Flag to determine if the search button should be active
   bool isButtonActive = false;
 
   @override
@@ -81,10 +85,10 @@ class _BlogSearchDialogState extends State<BlogSearchDialog> {
         ElevatedButton(
           onPressed: isButtonActive
               ? () {
-                  // Trigger search action and close the dialog if the button is active
-                  widget.onSearch(searchController.text);
-                  Navigator.pop(context);
-                }
+            // Trigger search action and close the dialog if the button is active
+            widget.onSearch(searchController.text);
+            Navigator.pop(context);
+          }
               : null, // Disable the button when the input is empty
           child: const Text('Search'),
         ),

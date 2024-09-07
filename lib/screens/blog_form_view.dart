@@ -59,13 +59,18 @@ class _BlogFormViewState extends State<BlogFormView> {
         );
 
         // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            'Blog saved successfully!',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Blog saved successfully!',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: Colors.green, // Green background for success
           ),
-          backgroundColor: Colors.green, // Green background for success
-        ));
+        );
 
         // Clear the form fields
         _titleController.clear();
@@ -73,15 +78,18 @@ class _BlogFormViewState extends State<BlogFormView> {
         _picUrlController.clear();
       } catch (e) {
         // Handle error and show error message
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-            'Saving blog failed. Please try again.',
-            style: TextStyle(
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Saving blog failed. Please try again.',
+              style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
-                fontWeight: FontWeight.bold),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            backgroundColor: Colors.red, // Red background for error
           ),
-          backgroundColor: Colors.red, // Red background for error
-        ));
+        );
       } finally {
         setState(() {
           _isLoading = false;
@@ -123,6 +131,16 @@ class _BlogFormViewState extends State<BlogFormView> {
     final textColorSecondary = colorScheme.secondary;
     final textColorPrimary = Theme.of(context).primaryColor;
 
+    final inputDecoration = InputDecoration(
+      labelStyle: TextStyle(color: textColorSecondary),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: textColorSecondary),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: textColorSecondary),
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Scrollbar(
@@ -144,18 +162,17 @@ class _BlogFormViewState extends State<BlogFormView> {
                     const SizedBox(height: 20),
                     Text(
                       'Create Blog',
-                      style:
-                          Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                fontSize: 40.0,
-                                color: textColorSecondary,
-                              ),
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                        fontSize: 40.0,
+                        color: textColorSecondary,
+                      ),
                     ),
                     const SizedBox(height: 25),
                     Text(
                       'Fill out the form below to create a new blog post.',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: textColorSecondary,
-                          ),
+                        color: textColorSecondary,
+                      ),
                     ),
                     const SizedBox(height: 30),
                     Form(
@@ -165,19 +182,9 @@ class _BlogFormViewState extends State<BlogFormView> {
                           TextFormField(
                             controller: _titleController,
                             style: TextStyle(color: textColorSecondary),
-                            decoration: InputDecoration(
+                            decoration: inputDecoration.copyWith(
                               labelText: 'Title',
                               suffixText: '*',
-                              labelStyle: TextStyle(color: textColorSecondary),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: textColorSecondary),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: textColorSecondary),
-                              ),
-                              errorStyle: TextStyle(color: textColorPrimary),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -190,22 +197,10 @@ class _BlogFormViewState extends State<BlogFormView> {
                           TextFormField(
                             controller: _contentController,
                             maxLines: null,
-                            // Unlimited lines
                             style: TextStyle(color: textColorSecondary),
-                            // Apply secondary color here
-                            decoration: InputDecoration(
+                            decoration: inputDecoration.copyWith(
                               labelText: 'Content',
                               suffixText: '*',
-                              labelStyle: TextStyle(color: textColorSecondary),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: textColorSecondary),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: textColorSecondary),
-                              ),
-                              errorStyle: TextStyle(color: textColorPrimary),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -221,27 +216,17 @@ class _BlogFormViewState extends State<BlogFormView> {
                           TextFormField(
                             controller: _picUrlController,
                             style: TextStyle(color: textColorSecondary),
-                            // Apply secondary color here
-                            decoration: InputDecoration(
+                            decoration: inputDecoration.copyWith(
                               labelText: 'Image URL',
-                              labelStyle: TextStyle(color: textColorSecondary),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: textColorSecondary),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: textColorSecondary),
-                              ),
                             ),
                           ),
                           const SizedBox(height: 20),
                           _isLoading
                               ? const CircularProgressIndicator()
                               : ElevatedButton(
-                                  onPressed: _saveBlog,
-                                  child: const Text('Save'),
-                                ),
+                            onPressed: _saveBlog,
+                            child: const Text('Save'),
+                          ),
                         ],
                       ),
                     ),

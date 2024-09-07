@@ -20,8 +20,6 @@ class BlogDetailView extends StatefulWidget {
 class _BlogDetailViewState extends State<BlogDetailView> {
   late Future<Blog?> _futureBlog;
   String _errorMessage = 'An error occurred';
-  bool _isFavorite = false; // TODO
-  TextEditingController _commentController = TextEditingController();
 
   @override
   void initState() {
@@ -41,45 +39,6 @@ class _BlogDetailViewState extends State<BlogDetailView> {
     }
   }
 
-  void _toggleFavorite() {
-    setState(() {
-      _isFavorite = !_isFavorite;
-    });
-  }
-
-  void _openCommentDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Add Comment'),
-          content: TextField(
-            controller: _commentController,
-            decoration: InputDecoration(
-              hintText: 'Enter your comment',
-            ),
-            maxLines: 4,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Handle comment posting
-                Navigator.of(context).pop();
-              },
-              child: Text('Post'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlogScaffoldWidget(
@@ -92,7 +51,11 @@ class _BlogDetailViewState extends State<BlogDetailView> {
           } else if (snapshot.hasError || snapshot.data == null) {
             return BlogErrorWidget(
               message: _errorMessage,
-              onRetry: () {},
+              onRetry: () {
+                setState(() {
+                  _futureBlog = _fetchBlogDetails();
+                });
+              },
               withScaffold: true,
             );
           } else {
@@ -116,71 +79,67 @@ class _BlogDetailViewState extends State<BlogDetailView> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(blog.user!.getDisplayName(),
-                                style:
-                                    Theme.of(context).textTheme.headlineLarge,
-                                overflow: TextOverflow.ellipsis),
-                            Text(timeago.format(blog.createdAt))
+                            Text(
+                              blog.user!.getDisplayName(),
+                              style: Theme.of(context).textTheme.headlineLarge,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(timeago.format(blog.createdAt)),
                           ],
-                        )
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16.0),
                     // Blog Heading
-                    Text(blog.title,
-                        style: Theme.of(context).textTheme.displayLarge),
+                    Text(
+                      blog.title,
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ),
                     const SizedBox(height: 16.0),
                     // Blog Image
                     blog.picUrl != null && blog.picUrl!.isNotEmpty
                         ? Image.network(
-                            blog.picUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              // Handles the case where the image cannot be retrieved
-                              return Container(
-                                height: 250,
-                                // Ensure height is consistent even if the image fails
-                                color: Theme.of(context).colorScheme.surface,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.broken_image,
-                                    // Show broken image icon when there's an error
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                    size: 250,
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : Container(
-                            height: 250,
-                            color: Theme.of(context).colorScheme.surface,
-                            child: Center(
-                              child: Icon(
-                                Icons.image,
-                                // Default image icon when no URL is provided
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                size: 150,
-                              ),
+                      blog.picUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 250,
+                          color: Theme.of(context).colorScheme.surface,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              size: 250,
                             ),
                           ),
+                        );
+                      },
+                    )
+                        : Container(
+                      height: 250,
+                      color: Theme.of(context).colorScheme.surface,
+                      child: Center(
+                        child: Icon(
+                          Icons.image,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          size: 150,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 16.0),
                     // Blog Tags
                     Row(
                       children: [
                         ElevatedButton.icon(
-                          onPressed: _toggleFavorite,
-                          icon: Icon(
-                            _isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
-                            color: _isFavorite ? Colors.red : Colors.white,
+                          onPressed: () {
+                          },
+                          icon: const Icon(
+                             Icons.favorite,
+                             color: Colors.white,
                           ),
                           label: Text('${blog.numberOfLikes} likes'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
                           ),
                         ),
                         const SizedBox(width: 8.0),
@@ -189,8 +148,7 @@ class _BlogDetailViewState extends State<BlogDetailView> {
                           icon: const Icon(Icons.comment),
                           label: Text('${blog.comments?.length ?? 0} comments'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
                           ),
                         ),
                       ],
@@ -210,20 +168,18 @@ class _BlogDetailViewState extends State<BlogDetailView> {
                     blog.comments != null && blog.comments!.isNotEmpty
                         ? CommentListWidget(comments: blog.comments!)
                         : Center(
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  'assets/images/no_comment.png',
-                                  width: 250,
-                                  height: 250,
-                                ),
-                                const Text('Be the first to comment')
-                              ],
-                            ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/no_comment.png',
+                            width: 250,
+                            height: 250,
                           ),
-                    const SizedBox(
-                      height: 70.0,
-                    )
+                          const Text('Be the first to comment')
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 70.0),
                   ],
                 ),
               ),

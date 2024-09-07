@@ -34,51 +34,44 @@ class _BlogListViewState extends State<BlogListView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchBlogs(); // Fetch the first page of blogs
-      setState(() {
-        _currentPage = 1;
-      });
-    });
+    _fetchBlogs(); // Fetch the first page of blogs
   }
 
-  Future<void> _fetchBlogs({
-    bool refresh = false,
-  }) async {
+  Future<void> _fetchBlogs({bool refresh = false}) async {
     setState(() {
       _errorMessage = null;
     });
 
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final blogProvider = Provider.of<BlogModel>(context, listen: false);
       int? userId = (widget.showUserBlogsOnly && userProvider.isLoggedIn)
           ? userProvider.user?.id
           : null;
 
-      await Provider.of<BlogModel>(context, listen: false).fetchBlogs(
+      await blogProvider.fetchBlogs(
         refresh: refresh,
         offset: _currentPage - 1,
         limit: _limit,
-        // Pass the limit to fetch a fixed number of blogs per page
         userId: userId,
       );
     } catch (e) {
       setState(() {
-        _errorMessage =
-            'Something went wrong. Cannot fetch blogs. Please try again later.';
+        _errorMessage = 'Something went wrong. Cannot fetch blogs. Please try again later.';
       });
     }
   }
 
   Future<void> _refresh() async {
-    _currentPage = 1; // Reset to the first page on refresh
+    setState(() {
+      _currentPage = 1; // Reset to the first page on refresh
+    });
     await _fetchBlogs(refresh: true);
   }
 
   Future<void> _nextPage() async {
-    // Increase currentPage if there are more blogs to fetch
-    if (_currentPage * _limit <
-        Provider.of<BlogModel>(context, listen: false).totalBlogs) {
+    final blogProvider = Provider.of<BlogModel>(context, listen: false);
+    if (_currentPage * _limit < blogProvider.totalBlogs) {
       setState(() {
         _currentPage += 1;
       });
@@ -87,7 +80,6 @@ class _BlogListViewState extends State<BlogListView> {
   }
 
   Future<void> _prevPage() async {
-    // Decrease currentPage if not on the first page
     if (_currentPage > 1) {
       setState(() {
         _currentPage -= 1;
@@ -108,6 +100,8 @@ class _BlogListViewState extends State<BlogListView> {
       onRefresh: _refresh,
       child: Consumer<BlogModel>(
         builder: (context, blogModel, child) {
+          Widget content;
+
           if (_errorMessage != null) {
             return BlogErrorWidget(
               message: _errorMessage!,
@@ -115,14 +109,10 @@ class _BlogListViewState extends State<BlogListView> {
             );
           }
 
-          final showClearFilterButton = blogModel.searchTerm.isNotEmpty;
-          Widget content;
-
           if (widget.showUserBlogsOnly && !userProvider.isLoggedIn) {
             content = Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  // Push LoginView and listen for result
                   final loginSuccess = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -130,9 +120,8 @@ class _BlogListViewState extends State<BlogListView> {
                     ),
                   );
 
-                  // Refresh blog list if login is successful
                   if (loginSuccess == true) {
-                    _fetchBlogs(refresh: true);
+                    await _fetchBlogs(refresh: true);
                   }
                 },
                 child: const Text("Login to view your blogs"),
@@ -160,6 +149,7 @@ class _BlogListViewState extends State<BlogListView> {
               blogModel: blogModel,
             );
           }
+
           return Column(
             children: [
               if (!(widget.showUserBlogsOnly && !userProvider.isLoggedIn))
@@ -170,20 +160,18 @@ class _BlogListViewState extends State<BlogListView> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_left),
-                        onPressed: _currentPage == 1
-                            ? null
-                            : _prevPage, // Call _prevPage if there are previous pages
+                        onPressed: _currentPage == 1 ? null : _prevPage,
                       ),
                       Text(
-                          '${_currentPage} / ${max(1, (blogModel.totalBlogs / _limit).ceil())}'),
+                        '${_currentPage} / ${max(1, (blogModel.totalBlogs / _limit).ceil())}',
+                      ),
                       IconButton(
                         icon: const Icon(Icons.arrow_right),
-                        onPressed: (_currentPage * _limit >=
-                                blogModel.totalBlogs)
+                        onPressed: (_currentPage * _limit >= blogModel.totalBlogs)
                             ? null
-                            : _nextPage, // Call _nextPage if there are more pages
+                            : _nextPage,
                       ),
-                      if (showClearFilterButton)
+                      if (blogModel.searchTerm.isNotEmpty)
                         ElevatedButton(
                           onPressed: _clearFilter,
                           child: const Text("Clear Filter"),

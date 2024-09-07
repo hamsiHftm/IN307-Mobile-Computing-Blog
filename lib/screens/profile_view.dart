@@ -4,7 +4,7 @@ import 'package:in307_mobile_computing_blog/component/blog_scaffold_widget.dart'
 import 'package:in307_mobile_computing_blog/component/profile_icon_widget.dart';
 import '../model/user.dart';
 import '../provider/user_provider.dart';
-import 'login_view.dart'; // Import UserProvider
+import 'login_view.dart'; // Import LoginView
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -22,11 +22,11 @@ class ProfileView extends StatelessWidget {
         body: Center(
           child: ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => LoginView()),
               );
             },
-            child: Text('Login'),
+            child: const Text('Login'),
           ),
         ),
       );
@@ -50,17 +50,19 @@ class ProfileView extends StatelessWidget {
           const SizedBox(height: 20),
           Center(
             child: Text(
-              user!.getDisplayName(),
-              style: Theme.of(context).textTheme.displayLarge,
+              user?.getDisplayName() ?? 'User',
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
           ),
           const SizedBox(height: 65),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.onSurface,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(24.0),
                   topRight: Radius.circular(24.0),
                 ),
@@ -76,44 +78,36 @@ class ProfileView extends StatelessWidget {
                       children: [
                         Text(
                           'First Name: ${user?.firstname ?? 'Not Available'}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
                         const SizedBox(height: 10),
                         Text(
                           'Last Name: ${user?.lastname ?? 'Not Available'}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
                         const SizedBox(height: 10),
                         Text(
                           'Email: ${user?.email ?? 'Not Available'}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 25.0),
-                  // Logout button
                   ElevatedButton(
                     onPressed: () {
                       userProvider.logout(); // Logout using UserProvider
-                      // Optionally, navigate to another screen if needed
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => LoginView()),
+                      );
                     },
-                    child: Text('Logout'),
+                    child: const Text('Logout'),
                   ),
                 ],
               ),
