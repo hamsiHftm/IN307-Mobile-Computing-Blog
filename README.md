@@ -127,6 +127,21 @@ static const String _baseUrl = "http://10.0.2.2:8080"; // Ensure this URL is cor
 - **Emulator Configuration**: `10.0.2.2` is used for Android emulators to access localhost. If using a different setup, adjust the `_baseUrl` accordingly.
 
 
+## User Experience Focus
+
+Throughout the development of this app, my primary focus was on enhancing user experience. Here’s how I’ve incorporated that:
+
+- **Smooth Navigation**: The app features smooth transitions and intuitive navigation. For example, in the blog list view, pagination buttons are enabled and disabled based on the available pages. This ensures users can navigate seamlessly between pages. The search functionality is also designed to be responsive, showing empty result messages with illustrations if no results are found and providing relevant blog posts when a search term yields results.
+
+- **Error Handling and Feedback**: Clear error handling and feedback mechanisms are integrated throughout the app. For instance, when the backend service is down, the app shows error messages with illustrations to inform users. During loading states, animations from the Lottie library are used to keep users engaged while data is being fetched.
+
+- **Validation and Guidance**: The app includes robust validation for forms. For example, when signing up or logging in, users receive immediate feedback on errors such as invalid email addresses or mismatched passwords. This helps users correct mistakes quickly. Similarly, when creating a new blog, the app ensures that the title and content are provided and that the content length exceeds ten characters before submission.
+
+- **Detailed Blog Views**: Blog posts are presented with comprehensive details. For example, each blog detail view includes the blog title, content, image, number of likes, and a list of comments. If there are no comments, an image placeholder is shown. This approach offers a rich and engaging experience, making it easy for users to interact with and appreciate the content.
+
+- **Consistent Design**: A consistent theme and design elements are used throughout the app. The design includes clear visual and interactive elements, such as consistent button styles and theme colors. This attention to detail enhances overall usability and provides a cohesive and pleasant user experience.
+
+
 ## FEEDBACK AND MY FOCUS - UX
 
 - **Time Constraints**: I had limited time and spent a lot of it working on authentication issues with the backend. Despite this, I focused on making the user experience (UX) as good as possible.
