@@ -4,7 +4,6 @@ class BlogAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final TabController? tabController;
   final VoidCallback? onProfilePressed;
   final VoidCallback? onSearchPressed;
-  final VoidCallback? onAddBlogPressed;
   final bool showBackButton;
 
   const BlogAppBarWidget({
@@ -12,7 +11,6 @@ class BlogAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     this.tabController,
     this.onProfilePressed,
     this.onSearchPressed,
-    this.onAddBlogPressed,
     this.showBackButton = false,
   });
 
@@ -40,12 +38,6 @@ class BlogAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.search),
             color: Colors.white,
             onPressed: onSearchPressed,
-          ),
-        if (tabController != null && tabController!.index == 1)
-          IconButton(
-            icon: const Icon(Icons.add),
-            color: Colors.white,
-            onPressed: onAddBlogPressed,
           ),
       ],
     );

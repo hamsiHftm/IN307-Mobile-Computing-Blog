@@ -1,5 +1,6 @@
 import 'package:logger/logger.dart';
 
+// It's not in use
 class AppLogger {
   static final Logger _logger = Logger(
     level: Level.debug, // Set the logging level (e.g., verbose, debug, info, warning, error, wtf)

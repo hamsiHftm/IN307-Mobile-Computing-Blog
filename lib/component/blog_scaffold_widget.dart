@@ -6,11 +6,8 @@ class BlogScaffoldWidget extends StatelessWidget {
   final TabController? tabController;
   final VoidCallback? onProfilePressed;
   final VoidCallback? onSearchPressed;
-  final VoidCallback? onAddBlogPressed;
   final Widget? bottomNavigationBar;
   final bool showBackButton;
-  final bool disableAppBar; // New parameter to control visibility of the app bar
-  final bool resizeToAvoidBottomInset; // New parameter to control keyboard resize behavior
 
   const BlogScaffoldWidget({
     super.key,
@@ -18,17 +15,13 @@ class BlogScaffoldWidget extends StatelessWidget {
     this.tabController,
     this.onProfilePressed,
     this.onSearchPressed,
-    this.onAddBlogPressed,
     this.bottomNavigationBar,
     this.showBackButton = false,
-    this.disableAppBar = false, // Default value is false (app bar is shown by default)
-    this.resizeToAvoidBottomInset = true, // Default value is true (resize to avoid bottom inset)
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset, // Use the parameter here
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -42,13 +35,10 @@ class BlogScaffoldWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Conditionally render the app bar based on disableAppBar
-            if (!disableAppBar)
               BlogAppBarWidget(
                 tabController: tabController,
                 onProfilePressed: onProfilePressed,
                 onSearchPressed: onSearchPressed,
-                onAddBlogPressed: onAddBlogPressed,
                 showBackButton: showBackButton,
               ),
             Expanded(child: body),
